@@ -42,9 +42,9 @@ export default function Hero() {
         </h1>
 
         <p className="mt-8 text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-          자료구조와 알고리즘을{" "}
-          <span className="text-purple-400 font-semibold">인터랙티브 시각화</span>
-          로 이해하세요. 더 이상 읽기만 하는 CS 공부는 없습니다.
+          Learn data structures and algorithms through{" "}
+          <span className="text-purple-400 font-semibold">interactive visualizations</span>
+          . No more studying CS from static text alone.
         </p>
 
         <div className="mt-10 flex items-center justify-center gap-4">
@@ -52,7 +52,7 @@ export default function Hero() {
             href="#topics"
             className="px-6 py-3 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 transition-all duration-200 font-mono text-sm"
           >
-            ↓ 토픽 둘러보기
+            ↓ Browse topics
           </a>
           <span className="text-zinc-600 text-sm font-mono">
             Phase 1 · {">"} 8 topics

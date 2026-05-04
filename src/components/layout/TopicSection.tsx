@@ -18,9 +18,9 @@ const complexityColors: Record<string, string> = {
 };
 
 const complexityLabels: Record<string, string> = {
-  easy: "기초",
-  medium: "중급",
-  hard: "고급",
+  easy: "Beginner",
+  medium: "Intermediate",
+  hard: "Advanced",
 };
 
 export default function TopicSection({

@@ -16,7 +16,7 @@ export default function TopicPageShell({
             href="/#topics"
             className="font-mono text-sm text-zinc-400 hover:text-purple-300 transition-colors"
           >
-            ← 홈
+            ← Home
           </Link>
           <span className="font-mono text-xs text-zinc-600 truncate text-right">
             {topicTitle}

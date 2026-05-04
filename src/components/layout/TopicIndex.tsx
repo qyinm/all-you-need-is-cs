@@ -11,9 +11,9 @@ const complexityStyles: Record<
 };
 
 const complexityLabels: Record<Topic["complexity"], string> = {
-  easy: "기초",
-  medium: "중급",
-  hard: "고급",
+  easy: "Beginner",
+  medium: "Intermediate",
+  hard: "Advanced",
 };
 
 export default function TopicIndex({ topics }: { topics: Topic[] }) {
@@ -28,10 +28,10 @@ export default function TopicIndex({ topics }: { topics: Topic[] }) {
             Phase 1 · Data Structures &amp; Algorithms
           </p>
           <h2 className="text-2xl md:text-3xl font-bold text-zinc-100">
-            토픽 선택
+            Choose a topic
           </h2>
           <p className="mt-2 text-zinc-500 text-sm max-w-lg mx-auto">
-            각 항목을 누르면 해당 시각화 전용 페이지로 이동합니다.
+            Each card opens a dedicated page with that visualization.
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function TopicIndex({ topics }: { topics: Topic[] }) {
                   {topic.subtitle}
                 </p>
                 <span className="mt-4 inline-flex items-center gap-1 text-xs font-mono text-purple-400/90 group-hover:text-purple-300">
-                  열기
+                  Open
                   <span aria-hidden>→</span>
                 </span>
               </Link>
@@ -68,7 +68,7 @@ export default function TopicIndex({ topics }: { topics: Topic[] }) {
         </ul>
 
         <p className="mt-12 text-center text-zinc-600 text-xs font-mono">
-          Phase 2–3 · OS / Networks / DB / Papers — 준비 중
+          Phase 2–3 · OS / Networks / DB / Papers — coming soon
         </p>
       </div>
     </section>
