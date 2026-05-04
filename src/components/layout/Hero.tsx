@@ -9,9 +9,13 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 text-base leading-normal text-body md:text-[16px] md:leading-[1.5]">
-          Learn data structures and algorithms through{" "}
-          <span className="font-medium text-ink">interactive visualizations</span>
-          . Same quiet layout as the docs—no chrome, just the lesson.
+          Chapter-shaped{" "}
+          <span className="font-medium text-ink">interactive labs</span> for{" "}
+          <span className="font-medium text-ink">
+            Fundamentals of Data Structures in C
+          </span>{" "}
+          (Horowitz, Sahni &amp; Anderson-Freed, 2nd ed.)—same flat doc-like layout, less
+          slideshow, more structure.
         </p>
 
         <div className="mt-8 flex justify-center px-2">
@@ -25,7 +29,7 @@ export default function Hero() {
             Browse topics
           </a>
           <span className="ui-caption text-mute">
-            Phase 1 · 8 topics
+            Ch. 1–10 · 10 topics
           </span>
         </div>
       </div>

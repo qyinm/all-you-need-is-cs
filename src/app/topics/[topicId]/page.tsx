@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const topic = getTopic(topicId);
   if (!topic) return { title: "Not found" };
   return {
-    title: `${topic.title} — All You Need is CS`,
+    title: `${topic.bookChapter} · ${topic.title} — All You Need is CS`,
     description: topic.subtitle,
   };
 }

@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "All You Need is CS — Visual Computer Science",
   description:
-    "Explore core computer science ideas with interactive animations. Understand data structures and algorithms visually.",
+    "Interactive chapter labs aligned with Horowitz, Sahni & Anderson-Freed—Fundamentals of Data Structures in C (2nd ed.).",
   keywords: [
     "computer science",
     "data structures",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "All You Need is CS",
     description:
-      "Explore data structures and algorithms through interactive visualizations.",
+      "Chapter-shaped visualizations for Fundamentals of Data Structures in C.",
     type: "website",
   },
 };

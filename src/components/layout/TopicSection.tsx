@@ -1,12 +1,16 @@
 "use client";
 
 import { ReactNode, useEffect, useRef, useState } from "react";
+import ChapterOutline from "@/components/layout/ChapterOutline";
+import type { BookOutlineItem } from "@/lib/topics";
 
 interface TopicSectionProps {
   id: string;
   title: string;
   subtitle: string;
   complexity: "easy" | "medium" | "hard";
+  bookChapter: string;
+  outline: BookOutlineItem[];
   children: ReactNode;
 }
 
@@ -21,6 +25,8 @@ export default function TopicSection({
   title,
   subtitle,
   complexity,
+  bookChapter,
+  outline,
   children,
 }: TopicSectionProps) {
   const ref = useRef<HTMLElement>(null);
@@ -54,8 +60,11 @@ export default function TopicSection({
       <div className="mx-auto w-full max-w-[720px]">
         <div className="mb-12 text-center">
           <div className="mb-4 flex flex-wrap items-center justify-center gap-3">
+            <span className="font-mono text-sm font-medium text-ink">
+              {bookChapter}
+            </span>
             <span className="font-mono text-sm text-mute">
-              {id.replace("-", "_")}.
+              {id.replace(/-/g, "_")}.
             </span>
             <span className="rounded-full bg-surface-soft px-3 py-1 font-mono text-xs font-medium text-charcoal">
               {complexityLabels[complexity]}
@@ -68,6 +77,8 @@ export default function TopicSection({
             {subtitle}
           </p>
         </div>
+
+        <ChapterOutline items={outline} />
 
         <div className="ui-terminal-panel">{children}</div>
       </div>
