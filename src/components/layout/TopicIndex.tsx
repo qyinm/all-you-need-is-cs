@@ -22,8 +22,8 @@ export default function TopicIndex({ topics }: { topics: Topic[] }) {
             Chapters 1–10 (interactive)
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-base leading-normal text-body">
-            Topics follow Horowitz, Sahni &amp; Anderson-Freed—each card is the matching
-            chapter lab. Ch. 11–12 are not interactive yet.
+            Topics follow Horowitz, Sahni &amp; Anderson-Freed. Each card opens the chapter hub
+            with every § linking to its own page (summary + lab where available).
           </p>
         </div>
 

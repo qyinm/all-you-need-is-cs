@@ -8,11 +8,15 @@ interface LLNode {
   prev?: number; // index of prev node (for doubly)
 }
 
-export default function LinkedListViz() {
+export default function LinkedListViz({
+  initialDoubly = false,
+}: {
+  initialDoubly?: boolean;
+} = {}) {
   const [nodes, setNodes] = useState<LLNode[]>([
     { value: 10 }, { value: 25 }, { value: 7 }, { value: 42 },
   ]);
-  const [doubly, setDoubly] = useState(false);
+  const [doubly, setDoubly] = useState(initialDoubly);
   const [highlight, setHighlight] = useState<number | null>(null);
   const [searchVal, setSearchVal] = useState("");
   const [insertVal, setInsertVal] = useState("");

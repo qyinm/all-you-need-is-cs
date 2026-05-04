@@ -136,7 +136,7 @@ export const PHASE1_TOPICS: Topic[] = [
     id: "sorting",
     title: "Sorting",
     subtitle:
-      "Internal sorting of Ch. 7—bubble, merge, and quick sort with step-by-step playback.",
+      "Internal sorting of Ch. 7—insertion, quick, merge, and heap sort with step-by-step playback where applicable.",
     complexity: "medium",
     bookChapter: "Ch. 7",
     outline: [
@@ -205,4 +205,42 @@ export const PHASE1_TOPICS: Topic[] = [
 
 export function getTopic(id: string): Topic | undefined {
   return PHASE1_TOPICS.find((t) => t.id === id);
+}
+
+/** Resolve one § within a chapter. */
+export function getTopicSection(
+  topicId: string,
+  sectionId: string
+): { topic: Topic; section: BookOutlineItem } | undefined {
+  const topic = getTopic(topicId);
+  if (!topic) return undefined;
+  const section = topic.outline.find((s) => s.id === sectionId);
+  if (!section) return undefined;
+  return { topic, section };
+}
+
+/** Prev / next § within the same chapter (no cross-chapter link). */
+export function getAdjacentSections(
+  topicId: string,
+  sectionId: string
+): { prev?: BookOutlineItem; next?: BookOutlineItem } {
+  const topic = getTopic(topicId);
+  if (!topic) return {};
+  const idx = topic.outline.findIndex((s) => s.id === sectionId);
+  if (idx < 0) return {};
+  return {
+    prev: idx > 0 ? topic.outline[idx - 1] : undefined,
+    next: idx < topic.outline.length - 1 ? topic.outline[idx + 1] : undefined,
+  };
+}
+
+/** All /topics/[topicId]/[sectionId] pairs for static generation. */
+export function getAllTopicSectionParams(): { topicId: string; sectionId: string }[] {
+  const out: { topicId: string; sectionId: string }[] = [];
+  for (const t of PHASE1_TOPICS) {
+    for (const s of t.outline) {
+      out.push({ topicId: t.id, sectionId: s.id });
+    }
+  }
+  return out;
 }

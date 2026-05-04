@@ -1,7 +1,14 @@
+import Link from "next/link";
 import type { BookOutlineItem } from "@/lib/topics";
 
-/** In-chapter §x.y list from the textbook TOC (reference; not separate routes). */
-export default function ChapterOutline({ items }: { items: BookOutlineItem[] }) {
+/** Chapter § list — links to `/topics/[topicId]/[sectionId]` when `topicId` is set. */
+export default function ChapterOutline({
+  items,
+  topicId,
+}: {
+  items: BookOutlineItem[];
+  topicId?: string;
+}) {
   if (items.length === 0) return null;
 
   return (
@@ -14,9 +21,25 @@ export default function ChapterOutline({ items }: { items: BookOutlineItem[] }) 
       </h2>
       <ol className="max-h-[min(400px,55vh)] space-y-2 overflow-y-auto pr-1 font-mono text-sm md:columns-2 md:gap-x-8 [&>li]:break-inside-avoid">
         {items.map((item) => (
-          <li key={item.id} className="flex gap-2 text-body leading-snug">
-            <span className="shrink-0 tabular-nums text-charcoal">{item.label}</span>
-            <span>{item.title}</span>
+          <li key={item.id} className="break-inside-avoid leading-snug">
+            {topicId ? (
+              <Link
+                href={`/topics/${topicId}/${item.id}`}
+                className="group flex gap-2 text-body hover:text-ink"
+              >
+                <span className="shrink-0 tabular-nums text-charcoal group-hover:text-ink">
+                  {item.label}
+                </span>
+                <span className="underline decoration-hairline underline-offset-4 group-hover:decoration-ink">
+                  {item.title}
+                </span>
+              </Link>
+            ) : (
+              <span className="flex gap-2 text-body">
+                <span className="shrink-0 tabular-nums text-charcoal">{item.label}</span>
+                <span>{item.title}</span>
+              </span>
+            )}
           </li>
         ))}
       </ol>

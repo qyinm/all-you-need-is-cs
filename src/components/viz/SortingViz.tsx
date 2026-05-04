@@ -3,7 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import P5Wrapper, { type SketchFunction } from "@/components/viz/P5Wrapper";
 
-type Algorithm = "bubble" | "merge" | "quick";
+type Algorithm = "bubble" | "insertion" | "merge" | "quick";
+
+const ALGO_LABELS: Record<Algorithm, string> = {
+  bubble: "Bubble sort",
+  insertion: "Insertion sort",
+  merge: "Merge sort",
+  quick: "Quick sort",
+};
 
 interface SortStep {
   type: "compare" | "swap" | "sorted";
@@ -27,6 +34,26 @@ function generateSteps(arr: number[], algo: Algorithm): SortStep[] {
       steps.push({ type: "sorted", indices: [n - 1 - i] });
     }
     steps.push({ type: "sorted", indices: [0] });
+    return steps;
+  }
+
+  if (algo === "insertion") {
+    for (let i = 1; i < n; i++) {
+      let j = i;
+      while (j > 0) {
+        steps.push({ type: "compare", indices: [j - 1, j] });
+        if (a[j - 1] > a[j]) {
+          [a[j - 1], a[j]] = [a[j], a[j - 1]];
+          steps.push({ type: "swap", indices: [j - 1, j] });
+          j--;
+        } else {
+          break;
+        }
+      }
+    }
+    for (let k = 0; k < n; k++) {
+      steps.push({ type: "sorted", indices: [k] });
+    }
     return steps;
   }
 
@@ -56,7 +83,10 @@ function generateSteps(arr: number[], algo: Algorithm): SortStep[] {
     return steps;
   }
 
-  // Merge sort
+  if (algo !== "merge") {
+    return steps;
+  }
+
   const mergeSort = (lo: number, hi: number) => {
     if (lo >= hi) return;
     const mid = Math.floor((lo + hi) / 2);
@@ -82,12 +112,18 @@ function generateSteps(arr: number[], algo: Algorithm): SortStep[] {
   return steps;
 }
 
-export default function SortingViz() {
+export default function SortingViz({
+  initialAlgorithm = "bubble",
+  lockAlgorithm = false,
+}: {
+  initialAlgorithm?: Algorithm;
+  lockAlgorithm?: boolean;
+} = {}) {
   const size = 30;
   const [array, setArray] = useState(() =>
     Array.from({ length: size }, () => Math.floor(Math.random() * 90 + 5))
   );
-  const [algo, setAlgo] = useState<Algorithm>("bubble");
+  const [algo, setAlgo] = useState<Algorithm>(initialAlgorithm);
   const [steps, setSteps] = useState<SortStep[]>([]);
   const [stepIdx, setStepIdx] = useState(-1);
   const [playing, setPlaying] = useState(false);
@@ -97,6 +133,10 @@ export default function SortingViz() {
   const highlightRef = useRef<Map<number, string>>(new Map());
 
   arrRef.current = array;
+
+  useEffect(() => {
+    setAlgo(initialAlgorithm);
+  }, [initialAlgorithm]);
 
   const startSorting = () => {
     const s = generateSteps([...array], algo);
@@ -202,15 +242,22 @@ export default function SortingViz() {
       <P5Wrapper sketch={sketch} className="min-h-[320px]" />
 
       <div className="flex flex-wrap items-center gap-2 justify-center">
-        <select
-          value={algo}
-          onChange={(e) => setAlgo(e.target.value as Algorithm)}
-          className="ui-input min-w-[8rem]"
-        >
-          <option value="bubble">Bubble Sort</option>
-          <option value="merge">Merge Sort</option>
-          <option value="quick">Quick Sort</option>
-        </select>
+        {lockAlgorithm ? (
+          <span className="min-w-[8rem] text-center font-mono text-sm text-ink">
+            {ALGO_LABELS[algo]}
+          </span>
+        ) : (
+          <select
+            value={algo}
+            onChange={(e) => setAlgo(e.target.value as Algorithm)}
+            className="ui-input min-w-[8rem]"
+          >
+            <option value="bubble">Bubble sort</option>
+            <option value="insertion">Insertion sort</option>
+            <option value="merge">Merge sort</option>
+            <option value="quick">Quick sort</option>
+          </select>
+        )}
         <button
           onClick={togglePlay}
           className="ui-btn-primary"

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import TopicPageBody from "@/components/layout/TopicPageBody";
+import ChapterHub from "@/components/layout/ChapterHub";
 import TopicPageShell from "@/components/layout/TopicPageShell";
 import { getTopic, PHASE1_TOPICS } from "@/lib/topics";
 
@@ -26,8 +26,8 @@ export default async function TopicPage({ params }: Props) {
   if (!topic) notFound();
 
   return (
-    <TopicPageShell topicTitle={topic.title}>
-      <TopicPageBody topic={topic} />
+    <TopicPageShell topicTitle={topic.title} topicId={topic.id}>
+      <ChapterHub topic={topic} />
     </TopicPageShell>
   );
 }
