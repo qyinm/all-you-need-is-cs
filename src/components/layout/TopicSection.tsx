@@ -54,7 +54,7 @@ export default function TopicSection({
       initial={{ opacity: 0, y: 40 }}
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="min-h-screen flex flex-col items-center justify-center px-6 py-20 border-b border-white/[0.04]"
+      className="min-h-screen flex flex-col items-center justify-center px-6 py-20 border-b border-white/[0.04] scroll-mt-[100px]"
     >
       <div className="w-full max-w-5xl">
         {/* Section header */}

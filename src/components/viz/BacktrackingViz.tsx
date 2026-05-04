@@ -4,6 +4,28 @@ import { useCallback, useRef, useState } from "react";
 import P5Wrapper, { type SketchFunction } from "@/components/viz/P5Wrapper";
 
 export default function BacktrackingViz() {
+  // Helper functions (must be defined before useState)
+  const createNQueensBoard = (size: number): number[][] => {
+    return Array.from({ length: size }, () => Array(size).fill(0));
+  };
+
+  const createMazeBoard = (): number[][] => {
+    const b = Array.from({ length: 8 }, () => Array(8).fill(0));
+    // Simple maze pattern
+    const walls = [
+      [0, 1], [0, 3], [0, 5], [0, 7],
+      [1, 2], [1, 4], [1, 6],
+      [2, 1], [2, 3], [2, 5], [2, 7],
+      [3, 0], [3, 2], [3, 4], [3, 6],
+      [4, 1], [4, 3], [4, 5], [4, 7],
+      [5, 2], [5, 4], [5, 6],
+      [6, 1], [6, 3], [6, 5], [6, 7],
+      [7, 0], [7, 2], [7, 4], [7, 6],
+    ];
+    for (const [r, c] of walls) b[r][c] = 1;
+    return b;
+  };
+
   const [mode, setMode] = useState<"nqueens" | "maze">("nqueens");
   const [n, setN] = useState(4);
   const [board, setBoard] = useState<number[][]>(() => createNQueensBoard(4));
@@ -104,27 +126,6 @@ export default function BacktrackingViz() {
       }
     };
   }, [mode, n]);
-
-  const createNQueensBoard = (size: number): number[][] => {
-    return Array.from({ length: size }, () => Array(size).fill(0));
-  };
-
-  const createMazeBoard = (): number[][] => {
-    const b = Array.from({ length: 8 }, () => Array(8).fill(0));
-    // Simple maze pattern
-    const walls = [
-      [0, 1], [0, 3], [0, 5], [0, 7],
-      [1, 2], [1, 4], [1, 6],
-      [2, 1], [2, 3], [2, 5], [2, 7],
-      [3, 0], [3, 2], [3, 4], [3, 6],
-      [4, 1], [4, 3], [4, 5], [4, 7],
-      [5, 2], [5, 4], [5, 6],
-      [6, 1], [6, 3], [6, 5], [6, 7],
-      [7, 0], [7, 2], [7, 4], [7, 6],
-    ];
-    for (const [r, c] of walls) b[r][c] = 1;
-    return b;
-  };
 
   const solveNQueens = () => {
     const b = createNQueensBoard(n);

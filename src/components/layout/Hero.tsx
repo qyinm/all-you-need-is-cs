@@ -49,13 +49,13 @@ export default function Hero() {
 
         <div className="mt-10 flex items-center justify-center gap-4">
           <a
-            href="#arrays"
+            href="#topics"
             className="px-6 py-3 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 transition-all duration-200 font-mono text-sm"
           >
-            ↓ 탐험 시작하기
+            ↓ 토픽 둘러보기
           </a>
           <span className="text-zinc-600 text-sm font-mono">
-            Phase 1 · {">"} 9 topics
+            Phase 1 · {">"} 8 topics
           </span>
         </div>
 

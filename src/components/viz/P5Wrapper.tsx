@@ -49,21 +49,32 @@ export default function P5Wrapper({
       (p as any)._containerWidth = rect.width;
       (p as any)._containerHeight = Math.min(rect.width * 0.6, 600);
 
+      // Call sketch FIRST so it can register its own p.setup / p.draw.
+      // This is important because sketch(p) may overwrite p.setup (e.g.
+      // GraphViz assigns p.setup = () => { p.colorMode(...); ... }).
+      // After sketch(p) returns, we patch p.setup to add createCanvas
+      // before delegating to the original setup.
+      const userSetup = (sketch as any).setup;
+      sketch(p);
+
+      // Save whatever p.setup the sketch assigned (if any)
+      const originalSetup = p.setup;
+
       p.setup = () => {
         p.createCanvas(
           (p as any)._containerWidth,
           (p as any)._containerHeight
         );
         p.pixelDensity(1);
-        // Call user's setup if they define one
-        if ((sketch as any).setup) {
-          (sketch as any).setup.call(p, p);
+        // Call user's setup if they defined one
+        if (userSetup) {
+          userSetup.call(p);
+        }
+        // Call the sketch's own p.setup (which may set colorMode, etc.)
+        if (originalSetup && originalSetup !== userSetup) {
+          originalSetup.call(p);
         }
       };
-
-      // Delegate draw to the sketch function, which may override
-      // p.draw by assigning to it inside the function
-      sketch(p);
 
       // If sketch didn't set up a draw loop, set a default no-op
       if (!p.draw) {
