@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import type p5 from "p5";
 
 export type SketchFunction = (p: p5) => void;
@@ -27,74 +27,70 @@ export default function P5Wrapper({
 }: P5WrapperProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<p5 | null>(null);
-
-  const mount = useCallback(async () => {
-    if (!containerRef.current) return;
-
-    // Dynamic import to avoid SSR issues
-    const P5 = (await import("p5")).default;
-
-    // If a previous instance exists, remove it
-    if (instanceRef.current) {
-      instanceRef.current.remove();
-      instanceRef.current = null;
-    }
-
-    const container = containerRef.current;
-    const rect = container.getBoundingClientRect();
-
-    // Wrap sketch to inject container dimensions
-    const wrappedSketch = (p: p5) => {
-      // Store container dimensions for sketch use
-      (p as any)._containerWidth = rect.width;
-      (p as any)._containerHeight = Math.min(rect.width * 0.6, 600);
-
-      // Call sketch FIRST so it can register its own p.setup / p.draw.
-      // This is important because sketch(p) may overwrite p.setup (e.g.
-      // GraphViz assigns p.setup = () => { p.colorMode(...); ... }).
-      // After sketch(p) returns, we patch p.setup to add createCanvas
-      // before delegating to the original setup.
-      const userSetup = (sketch as any).setup;
-      sketch(p);
-
-      // Save whatever p.setup the sketch assigned (if any)
-      const originalSetup = p.setup;
-
-      p.setup = () => {
-        p.createCanvas(
-          (p as any)._containerWidth,
-          (p as any)._containerHeight
-        );
-        p.pixelDensity(1);
-        // Call user's setup if they defined one
-        if (userSetup) {
-          userSetup.call(p);
-        }
-        // Call the sketch's own p.setup (which may set colorMode, etc.)
-        if (originalSetup && originalSetup !== userSetup) {
-          originalSetup.call(p);
-        }
-      };
-
-      // If sketch didn't set up a draw loop, set a default no-op
-      if (!p.draw) {
-        p.noLoop();
-      }
-    };
-
-    instanceRef.current = new P5(wrappedSketch, container);
-    onReady?.();
-  }, [sketch, onReady]);
+  /** Bumps on cleanup so in-flight async mounts (after dynamic import) do not attach a second p5 instance. */
+  const mountGenRef = useRef(0);
 
   useEffect(() => {
-    mount();
-    return () => {
+    const mountId = ++mountGenRef.current;
+
+    (async () => {
+      const P5 = (await import("p5")).default;
+      if (mountId !== mountGenRef.current) return;
+
+      const el = containerRef.current;
+      if (!el) return;
+
       if (instanceRef.current) {
         instanceRef.current.remove();
         instanceRef.current = null;
       }
+      el.replaceChildren();
+
+      const rect = el.getBoundingClientRect();
+
+      const wrappedSketch = (p: p5) => {
+        (p as any)._containerWidth = rect.width;
+        (p as any)._containerHeight = Math.min(rect.width * 0.6, 600);
+
+        const userSetup = (sketch as any).setup;
+        sketch(p);
+
+        const originalSetup = p.setup;
+
+        p.setup = () => {
+          p.createCanvas(
+            (p as any)._containerWidth,
+            (p as any)._containerHeight
+          );
+          p.pixelDensity(1);
+          if (userSetup) {
+            userSetup.call(p);
+          }
+          if (originalSetup && originalSetup !== userSetup) {
+            originalSetup.call(p);
+          }
+        };
+
+        if (!p.draw) {
+          p.noLoop();
+        }
+      };
+
+      if (mountId !== mountGenRef.current) return;
+
+      instanceRef.current = new P5(wrappedSketch, el);
+      onReady?.();
+    })();
+
+    return () => {
+      mountGenRef.current += 1;
+      if (instanceRef.current) {
+        instanceRef.current.remove();
+        instanceRef.current = null;
+      }
+      containerRef.current?.replaceChildren();
     };
-  }, [mount]);
+  }, [sketch, onReady]);
 
   return (
     <div
