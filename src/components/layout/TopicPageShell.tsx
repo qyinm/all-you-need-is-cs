@@ -9,23 +9,23 @@ export default function TopicPageShell({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="sticky top-0 z-20 bg-surface/80 backdrop-blur-xl border-b border-white/[0.04]">
-        <div className="max-w-[1300px] mx-auto px-6 py-3 flex items-center justify-between gap-4">
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-20 h-14 border-b border-hairline bg-canvas">
+        <div className="mx-auto flex h-full max-w-[960px] items-center justify-between gap-4 px-6">
           <Link
             href="/#topics"
-            className="font-mono text-sm text-zinc-400 hover:text-purple-300 transition-colors"
+            className="text-sm font-medium text-ink underline decoration-hairline underline-offset-4"
           >
             ← Home
           </Link>
-          <span className="font-mono text-xs text-zinc-600 truncate text-right">
+          <span className="truncate text-right text-sm font-medium text-body">
             {topicTitle}
           </span>
         </div>
       </header>
       {children}
-      <footer className="mt-auto py-12 text-center border-t border-white/[0.04]">
-        <p className="text-zinc-600 text-sm font-mono">
+      <footer className="mt-auto border-t border-hairline px-6 py-8 text-center">
+        <p className="font-mono text-xs leading-[1.33] text-body">
           All You Need is CS · Phase 1 · Built with Next.js &amp; p5.js
         </p>
       </footer>

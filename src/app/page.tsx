@@ -7,8 +7,8 @@ export default function Home() {
     <div className="flex flex-col">
       <Hero />
       <TopicIndex topics={PHASE1_TOPICS} />
-      <footer className="py-12 text-center border-t border-white/[0.04]">
-        <p className="text-zinc-600 text-sm font-mono">
+      <footer className="border-t border-hairline px-6 py-8 text-center">
+        <p className="font-mono text-xs leading-[1.33] text-body">
           All You Need is CS · Phase 1 · Built with Next.js &amp; p5.js
         </p>
       </footer>

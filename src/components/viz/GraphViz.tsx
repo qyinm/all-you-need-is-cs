@@ -204,11 +204,11 @@ export default function GraphViz() {
       <P5Wrapper sketch={sketch} className="min-h-[400px]" />
 
       <div className="flex flex-wrap items-center gap-2 justify-center">
-        <label className="text-zinc-400 text-xs font-mono">Start:</label>
+        <label className="ui-label">Start:</label>
         <select
           value={startNode}
           onChange={(e) => setStartNode(parseInt(e.target.value))}
-          className="px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input min-w-[6rem]"
         >
           {nodes.map((n) => (
             <option key={n.id} value={n.id}>
@@ -217,27 +217,26 @@ export default function GraphViz() {
           ))}
         </select>
         <button
+          type="button"
           onClick={runBFS}
           disabled={algo !== null}
-          className="px-4 py-1.5 rounded bg-cyan-600/20 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-primary disabled:opacity-40"
         >
           BFS
         </button>
         <button
+          type="button"
           onClick={runDFS}
           disabled={algo !== null}
-          className="px-4 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-secondary disabled:opacity-40"
         >
           DFS
         </button>
-        <button
-          onClick={reset}
-          className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-sm font-mono transition-colors"
-        >
+        <button type="button" onClick={reset} className="ui-btn-secondary">
           Reset
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         Visited: {visited.size} / {nodes.length} · {algo === "bfs" ? "BFS" : algo === "dfs" ? "DFS" : "Select algorithm"}
       </p>
     </div>

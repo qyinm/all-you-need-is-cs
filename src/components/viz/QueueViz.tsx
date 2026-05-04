@@ -154,24 +154,26 @@ export default function QueueViz() {
           placeholder="Value"
           value={enqVal}
           onChange={(e) => setEnqVal(e.target.value)}
-          className="w-24 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-24"
         />
         <button
+          type="button"
           onClick={enqueue}
           disabled={animating !== null}
-          className="px-4 py-1.5 rounded bg-cyan-600/20 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-primary disabled:opacity-40"
         >
           Enqueue
         </button>
         <button
+          type="button"
           onClick={dequeue}
           disabled={animating !== null || queue.length === 0}
-          className="px-4 py-1.5 rounded bg-red-600/20 border border-red-500/30 text-red-300 hover:bg-red-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-secondary disabled:opacity-40"
         >
           Dequeue
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         FRONT → {queue.length > 0 ? queue[0] : "—"} · REAR → {queue.length > 0 ? queue[queue.length - 1] : "—"} · Size: {queue.length}
       </p>
     </div>

@@ -193,37 +193,35 @@ export default function BacktrackingViz() {
         <select
           value={mode}
           onChange={(e) => setMode(e.target.value as "nqueens" | "maze")}
-          className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input min-w-[8rem]"
         >
           <option value="nqueens">N-Queens</option>
           <option value="maze">Maze</option>
         </select>
         {mode === "nqueens" && (
           <>
-            <label className="text-zinc-400 text-xs font-mono">n =</label>
+            <label className="ui-label">n =</label>
             <input
               type="number"
               value={n}
               onChange={(e) => setN(Math.max(4, Math.min(8, parseInt(e.target.value) || 4)))}
-              className="w-14 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+              className="ui-input w-16"
             />
           </>
         )}
         <button
+          type="button"
           onClick={solveNQueens}
           disabled={animating}
-          className="px-4 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-primary disabled:opacity-40"
         >
           Solve
         </button>
-        <button
-          onClick={reset}
-          className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-sm font-mono transition-colors"
-        >
+        <button type="button" onClick={reset} className="ui-btn-secondary">
           Reset
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         {mode === "nqueens" ? `N-Queens (${n}×${n}) · Steps: ${step} · ${solved ? "Solved ✓" : animating ? "Solving..." : "Click to solve"}` : "Maze solver (DFS backtracking)"}
       </p>
     </div>

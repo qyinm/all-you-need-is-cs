@@ -176,34 +176,37 @@ export default function HeapViz() {
           placeholder="Value"
           value={insertVal}
           onChange={(e) => setInsertVal(e.target.value)}
-          className="w-20 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
         <button
+          type="button"
           onClick={insert}
           disabled={animating !== null}
-          className="px-4 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-primary disabled:opacity-40"
         >
           Insert
         </button>
         <button
+          type="button"
           onClick={extract}
           disabled={animating !== null || heap.length === 0}
-          className="px-4 py-1.5 rounded bg-red-600/20 border border-red-500/30 text-red-300 hover:bg-red-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-secondary disabled:opacity-40"
         >
           Extract {isMax ? "Max" : "Min"}
         </button>
-        <label className="flex items-center gap-1.5 text-zinc-400 text-xs font-mono cursor-pointer">
-          <input type="checkbox" checked={isMax} onChange={(e) => setIsMax(e.target.checked)} className="accent-purple-500" />
+        <label className="ui-label flex cursor-pointer items-center gap-1.5">
+          <input type="checkbox" checked={isMax} onChange={(e) => setIsMax(e.target.checked)} className="accent-[var(--color-primary)]" />
           Max Heap
         </label>
         <button
+          type="button"
           onClick={() => setHeap([10, 20, 30, 40, 50, 60, 70])}
-          className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-sm font-mono transition-colors"
+          className="ui-btn-secondary"
         >
           🎲 Reset
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         {isMax ? "Max" : "Min"} Heap · Size: {heap.length} · Root: {heap[0] ?? "—"}
       </p>
     </div>

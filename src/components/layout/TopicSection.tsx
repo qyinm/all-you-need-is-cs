@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ReactNode, useEffect, useRef, useState } from "react";
 
 interface TopicSectionProps {
@@ -10,12 +9,6 @@ interface TopicSectionProps {
   complexity: "easy" | "medium" | "hard";
   children: ReactNode;
 }
-
-const complexityColors: Record<string, string> = {
-  easy: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  medium: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  hard: "bg-red-500/10 text-red-400 border-red-500/20",
-};
 
 const complexityLabels: Record<string, string> = {
   easy: "Beginner",
@@ -48,45 +41,36 @@ export default function TopicSection({
   }, []);
 
   return (
-    <motion.section
+    <section
       ref={ref}
       id={id}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isVisible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="min-h-screen flex flex-col items-center justify-center px-6 py-20 border-b border-white/[0.04] scroll-mt-[100px]"
+      className="scroll-mt-14 border-t border-hairline px-6 py-12 md:py-[88px]"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 0.45s ease-out, transform 0.45s ease-out",
+      }}
     >
-      <div className="w-full max-w-5xl">
-        {/* Section header */}
+      <div className="mx-auto w-full max-w-[720px]">
         <div className="mb-12 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="font-mono text-sm text-zinc-500">
+          <div className="mb-4 flex flex-wrap items-center justify-center gap-3">
+            <span className="font-mono text-sm text-mute">
               {id.replace("-", "_")}.
             </span>
-            <span
-              className={`px-2.5 py-0.5 rounded-full text-xs font-mono border ${complexityColors[complexity]}`}
-            >
+            <span className="rounded-full bg-surface-soft px-3 py-1 font-mono text-xs font-medium text-charcoal">
               {complexityLabels[complexity]}
             </span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-3">
+          <h1 className="font-display text-[1.875rem] font-medium leading-[1.2] text-ink md:text-[30px]">
             {title}
-          </h2>
-          <p className="text-zinc-400 text-lg max-w-xl mx-auto">{subtitle}</p>
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-[1.5] text-body">
+            {subtitle}
+          </p>
         </div>
 
-        {/* Content */}
-        <div className="relative">
-          {/* Decorative corner brackets */}
-          <div className="absolute -top-3 -left-3 text-purple-500/20 font-mono text-xl select-none">
-            {"/*"}
-          </div>
-          <div className="absolute -bottom-3 -right-3 text-purple-500/20 font-mono text-xl select-none">
-            {"*/"}
-          </div>
-          {children}
-        </div>
+        <div className="ui-terminal-panel">{children}</div>
       </div>
-    </motion.section>
+    </section>
   );
 }

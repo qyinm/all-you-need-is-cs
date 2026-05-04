@@ -157,24 +157,26 @@ export default function StackViz() {
           placeholder="Value"
           value={pushVal}
           onChange={(e) => setPushVal(e.target.value)}
-          className="w-24 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-24"
         />
         <button
+          type="button"
           onClick={push}
           disabled={animating !== null}
-          className="px-4 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-primary disabled:opacity-40"
         >
           Push
         </button>
         <button
+          type="button"
           onClick={pop}
           disabled={animating !== null || stack.length === 0}
-          className="px-4 py-1.5 rounded bg-red-600/20 border border-red-500/30 text-red-300 hover:bg-red-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-secondary disabled:opacity-40"
         >
           Pop
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         TOP → {stack.length > 0 ? stack[stack.length - 1] : "—"} · Size: {stack.length}
       </p>
     </div>

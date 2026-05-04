@@ -158,23 +158,23 @@ export default function TreeViz() {
           placeholder="Value"
           value={insertVal}
           onChange={(e) => setInsertVal(e.target.value)}
-          className="w-20 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
-        <button onClick={insert} className="px-3 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={insert} className="ui-btn-primary">
           Insert
         </button>
-        <span className="text-zinc-700 mx-1">|</span>
-        <button onClick={() => startTraversal("pre")} className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-sm font-mono transition-colors">
+        <span className="mx-1 text-mute">|</span>
+        <button type="button" onClick={() => startTraversal("pre")} className="ui-btn-secondary">
           Preorder
         </button>
-        <button onClick={() => startTraversal("in")} className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-sm font-mono transition-colors">
+        <button type="button" onClick={() => startTraversal("in")} className="ui-btn-secondary">
           Inorder
         </button>
-        <button onClick={() => startTraversal("post")} className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-sm font-mono transition-colors">
+        <button type="button" onClick={() => startTraversal("post")} className="ui-btn-secondary">
           Postorder
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         {travType ? `${travType}order traversal: [${traversal.join(", ")}]` : "Click traversal button to animate"}
       </p>
     </div>

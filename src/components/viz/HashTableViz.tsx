@@ -167,19 +167,19 @@ export default function HashTableViz() {
           placeholder="Key"
           value={keyInput}
           onChange={(e) => setKeyInput(e.target.value)}
-          className="w-24 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-24"
         />
-        <button onClick={insert} className="px-4 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={insert} className="ui-btn-primary">
           Insert
         </button>
-        <button onClick={search} className="px-4 py-1.5 rounded bg-amber-600/20 border border-amber-500/30 text-amber-300 hover:bg-amber-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={search} className="ui-btn-secondary">
           Search
         </button>
-        <button onClick={remove} className="px-4 py-1.5 rounded bg-red-600/20 border border-red-500/30 text-red-300 hover:bg-red-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={remove} className="ui-btn-secondary">
           Delete
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         Load factor: {(stats.elements / stats.buckets).toFixed(2)} · Elements: {stats.elements} · Buckets: {stats.buckets}
       </p>
     </div>

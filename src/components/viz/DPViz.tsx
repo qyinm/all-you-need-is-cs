@@ -146,22 +146,23 @@ export default function DPViz() {
       <P5Wrapper sketch={sketch} className="min-h-[380px]" />
 
       <div className="flex flex-wrap items-center gap-2 justify-center">
-        <label className="text-zinc-400 text-xs font-mono">n =</label>
+        <label className="ui-label">n =</label>
         <input
           type="number"
           value={n}
           onChange={(e) => setN(Math.max(0, Math.min(8, parseInt(e.target.value) || 0)))}
-          className="w-16 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
         <button
+          type="button"
           onClick={animateDP}
           disabled={animating}
-          className="px-4 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors disabled:opacity-40"
+          className="ui-btn-primary disabled:opacity-40"
         >
           Generate & Animate
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         Fibonacci(n) with memoization · {memo.size > 0 ? `fib(${n}) = ${memo.get(n) ?? "—"}` : "Click to start"}
       </p>
     </div>

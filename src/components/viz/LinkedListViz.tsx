@@ -163,12 +163,12 @@ export default function LinkedListViz() {
           placeholder="Value"
           value={insertVal}
           onChange={(e) => setInsertVal(e.target.value)}
-          className="w-20 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
-        <button onClick={insertHead} className="px-3 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={insertHead} className="ui-btn-secondary">
           Insert Head
         </button>
-        <button onClick={insertTail} className="px-3 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={insertTail} className="ui-btn-secondary">
           Insert Tail
         </button>
         <input
@@ -176,9 +176,9 @@ export default function LinkedListViz() {
           placeholder="Idx"
           value={insertIdx}
           onChange={(e) => setInsertIdx(e.target.value)}
-          className="w-14 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-16"
         />
-        <button onClick={insertAt} className="px-3 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={insertAt} className="ui-btn-secondary">
           Insert At
         </button>
         <input
@@ -186,9 +186,9 @@ export default function LinkedListViz() {
           placeholder="Del idx"
           value={deleteIdx}
           onChange={(e) => setDeleteIdx(e.target.value)}
-          className="w-16 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-[4.5rem]"
         />
-        <button onClick={deleteAt} className="px-3 py-1.5 rounded bg-red-600/20 border border-red-500/30 text-red-300 hover:bg-red-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={deleteAt} className="ui-btn-secondary">
           Delete
         </button>
         <input
@@ -196,17 +196,17 @@ export default function LinkedListViz() {
           placeholder="Search"
           value={searchVal}
           onChange={(e) => setSearchVal(e.target.value)}
-          className="w-20 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
-        <button onClick={search} className="px-3 py-1.5 rounded bg-amber-600/20 border border-amber-500/30 text-amber-300 hover:bg-amber-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={search} className="ui-btn-primary">
           Search
         </button>
-        <label className="flex items-center gap-1.5 text-zinc-400 text-xs font-mono cursor-pointer">
-          <input type="checkbox" checked={doubly} onChange={(e) => setDoubly(e.target.checked)} className="accent-purple-500" />
+        <label className="ui-label flex cursor-pointer items-center gap-1.5">
+          <input type="checkbox" checked={doubly} onChange={(e) => setDoubly(e.target.checked)} className="accent-[var(--color-primary)]" />
           Doubly
         </label>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         Nodes: {nodes.length} · HEAD = {nodes[0]?.value} · TAIL = {nodes[nodes.length - 1]?.value}
       </p>
     </div>

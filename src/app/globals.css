@@ -1,28 +1,41 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-accent-dim: var(--accent-dim);
-  --color-surface: var(--surface);
-  --color-surface-hover: var(--surface-hover);
-  --color-border: var(--border);
-  --color-muted: var(--muted);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/*
+ * Design tokens — DESIGN.md (Ollama-style flat marketing system)
+ * Canvas-first light UI: black primary pills, hairline borders, no shadows/gradients on chrome.
+ */
+:root {
+  --color-primary: #000000;
+  --color-ink-deep: #090909;
+  --color-on-primary: #ffffff;
+  --color-canvas: #ffffff;
+  --color-surface-soft: #fafafa;
+  --color-surface-dark: #171717;
+  --color-hairline: #e5e5e5;
+  --color-hairline-strong: #d4d4d4;
+  --color-ink: #000000;
+  --color-charcoal: #525252;
+  --color-body: #737373;
+  --color-mute: #a3a3a3;
+  --color-on-dark: #ffffff;
+  --color-on-dark-mute: rgba(255, 255, 255, 0.7);
+  --color-focus-ring: rgba(59, 130, 246, 0.5);
+  color-scheme: light;
 }
 
-:root {
-  --background: #06060a;
-  --foreground: #e1e1e6;
-  --accent: #7c3aed;
-  --accent-dim: #5b21b6;
-  --surface: #0e0e14;
-  --surface-hover: #16161e;
-  --border: #1e1e2e;
-  --muted: #6b7280;
-  color-scheme: dark;
+@theme inline {
+  --color-canvas: #ffffff;
+  --color-ink: #000000;
+  --color-primary: #000000;
+  --color-body: #737373;
+  --color-mute: #a3a3a3;
+  --color-charcoal: #525252;
+  --color-surface-soft: #fafafa;
+  --color-hairline: #e5e5e5;
+  --color-hairline-strong: #d4d4d4;
+  --color-surface-dark: #171717;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 html {
@@ -30,32 +43,168 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar styling */
+.font-display {
+  font-family: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--color-ink);
+}
+
+/* Scrollbar — minimal, hairline */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--color-hairline-strong);
   border-radius: 3px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+
+/* DESIGN.md — button-primary */
+.ui-btn-primary {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.ui-btn-primary:hover {
+  background: var(--color-ink-deep);
+}
+.ui-btn-primary:active {
+  background: var(--color-ink-deep);
+}
+.ui-btn-primary:disabled {
+  background: var(--color-surface-soft);
+  color: var(--color-mute);
+  cursor: not-allowed;
 }
 
-/* Code editor style selection */
-::selection {
-  background: rgba(124, 58, 237, 0.3);
-  color: #fff;
+/* DESIGN.md — button-secondary */
+.ui-btn-secondary {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  border: 1px solid var(--color-hairline-strong);
+  cursor: pointer;
+}
+.ui-btn-secondary:hover {
+  background: var(--color-surface-soft);
+}
+.ui-btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Compact secondary — index chips, tight toolbars */
+.ui-btn-secondary-sm {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  border: 1px solid var(--color-hairline-strong);
+  cursor: pointer;
+}
+.ui-btn-secondary-sm:hover {
+  background: var(--color-surface-soft);
+}
+
+/* DESIGN.md — text-input (pill) */
+.ui-input {
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-hairline);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-size: 14px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+.ui-input:focus {
+  border-color: var(--color-ink);
+  outline: none;
+}
+
+.ui-caption {
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--color-body);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+.ui-label {
+  font-size: 12px;
+  color: var(--color-charcoal);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* install-snippet / command strip */
+.ui-install-snippet {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  font-size: 16px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  max-width: 100%;
+}
+
+/* Terminal-style viz container — rounded.lg + hairline */
+.ui-terminal-panel {
+  border-radius: 12px;
+  border: 1px solid var(--color-hairline);
+  background: var(--color-canvas);
+  padding: 16px;
 }
 
 /* P5 canvas centering */
@@ -66,6 +215,6 @@ body {
 }
 
 .p5-canvas-container canvas {
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  border-radius: 12px;
+  border: 1px solid var(--color-hairline);
 }

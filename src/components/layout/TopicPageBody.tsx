@@ -53,13 +53,13 @@ export default function TopicPageBody({ topic }: { topic: Topic }) {
         return (
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-zinc-200 mb-4">
+              <h3 className="mb-4 font-display text-[20px] font-medium text-ink">
                 Stack (LIFO)
               </h3>
               <StackViz />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-zinc-200 mb-4">
+              <h3 className="mb-4 font-display text-[20px] font-medium text-ink">
                 Queue (FIFO)
               </h3>
               <QueueViz />
@@ -72,13 +72,13 @@ export default function TopicPageBody({ topic }: { topic: Topic }) {
         return (
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-zinc-200 mb-4">
+              <h3 className="mb-4 font-display text-[20px] font-medium text-ink">
                 Binary Tree
               </h3>
               <TreeViz />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-zinc-200 mb-4">
+              <h3 className="mb-4 font-display text-[20px] font-medium text-ink">
                 Binary Search Tree
               </h3>
               <BSTViz />
@@ -93,13 +93,13 @@ export default function TopicPageBody({ topic }: { topic: Topic }) {
         return (
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-zinc-200 mb-4">
+              <h3 className="mb-4 font-display text-[20px] font-medium text-ink">
                 Fibonacci (Memoization)
               </h3>
               <DPViz />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-zinc-200 mb-4">
+              <h3 className="mb-4 font-display text-[20px] font-medium text-ink">
                 N-Queens &amp; Maze (Backtracking)
               </h3>
               <BacktrackingViz />

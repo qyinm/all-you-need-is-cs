@@ -122,29 +122,24 @@ export default function ArrayViz() {
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-2 justify-center">
-        <button
-          onClick={insertValue}
-          className="px-3 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors"
-        >
+        <button type="button" onClick={insertValue} className="ui-btn-primary">
           Insert (random)
         </button>
-        <button
-          onClick={deleteValue}
-          className="px-3 py-1.5 rounded bg-red-600/20 border border-red-500/30 text-red-300 hover:bg-red-600/30 text-sm font-mono transition-colors"
-        >
+        <button type="button" onClick={deleteValue} className="ui-btn-secondary">
           Delete (random)
         </button>
         {array.map((_, i) => (
           <button
             key={i}
+            type="button"
             onClick={() => accessValue(i)}
-            className="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-xs font-mono transition-colors"
+            className="ui-btn-secondary-sm"
           >
             [{i}]
           </button>
         ))}
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         Elements: {array.length} · Click [index] to access
       </p>
     </div>

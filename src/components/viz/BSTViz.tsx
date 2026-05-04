@@ -150,9 +150,9 @@ export default function BSTViz() {
           placeholder="Insert"
           value={insertVal}
           onChange={(e) => setInsertVal(e.target.value)}
-          className="w-20 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
-        <button onClick={insert} className="px-3 py-1.5 rounded bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={insert} className="ui-btn-primary">
           Insert
         </button>
         <input
@@ -160,9 +160,9 @@ export default function BSTViz() {
           placeholder="Search"
           value={searchVal}
           onChange={(e) => setSearchVal(e.target.value)}
-          className="w-20 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
-        <button onClick={search} className="px-3 py-1.5 rounded bg-amber-600/20 border border-amber-500/30 text-amber-300 hover:bg-amber-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={search} className="ui-btn-secondary">
           Search
         </button>
         <input
@@ -170,19 +170,20 @@ export default function BSTViz() {
           placeholder="Delete"
           value={deleteVal}
           onChange={(e) => setDeleteVal(e.target.value)}
-          className="w-20 px-2 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm font-mono"
+          className="ui-input w-20"
         />
-        <button onClick={remove} className="px-3 py-1.5 rounded bg-red-600/20 border border-red-500/30 text-red-300 hover:bg-red-600/30 text-sm font-mono transition-colors">
+        <button type="button" onClick={remove} className="ui-btn-secondary">
           Delete
         </button>
         <button
+          type="button"
           onClick={() => setRoot(buildSampleBST())}
-          className="px-3 py-1.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 hover:bg-zinc-700 text-sm font-mono transition-colors"
+          className="ui-btn-secondary"
         >
           🎲 Reset
         </button>
       </div>
-      <p className="text-center text-zinc-500 text-xs font-mono">
+      <p className="ui-caption text-center">
         BST property: left &lt; root &lt; right · {highlightPath.length > 0 ? `Path: [${highlightPath.join(" → ")}]` : ""}
       </p>
     </div>
