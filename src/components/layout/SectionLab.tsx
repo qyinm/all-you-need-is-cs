@@ -4,6 +4,21 @@ import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 const ArrayViz = dynamic(() => import("@/components/viz/ArrayViz"), { ssr: false });
+const MultidimArrayViz = dynamic(() => import("@/components/viz/MultidimArrayViz"), {
+  ssr: false,
+});
+const SparseMatrixViz = dynamic(() => import("@/components/viz/SparseMatrixViz"), {
+  ssr: false,
+});
+const StringArrayViz = dynamic(() => import("@/components/viz/StringArrayViz"), { ssr: false });
+const StructUnionViz = dynamic(() => import("@/components/viz/StructUnionViz"), {
+  ssr: false,
+});
+const PolynomialListViz = dynamic(() => import("@/components/viz/PolynomialListViz"), {
+  ssr: false,
+});
+const UnionFindViz = dynamic(() => import("@/components/viz/UnionFindViz"), { ssr: false });
+const RadixSortViz = dynamic(() => import("@/components/viz/RadixSortViz"), { ssr: false });
 const SortingViz = dynamic(() => import("@/components/viz/SortingViz"), { ssr: false });
 const LinkedListViz = dynamic(() => import("@/components/viz/LinkedListViz"), {
   ssr: false,
@@ -38,7 +53,20 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
     case "basic-concepts":
       return null;
     case "arrays":
-      return <ArrayViz />;
+      switch (sectionId) {
+        case "2-1":
+          return <ArrayViz />;
+        case "2-2":
+          return <StructUnionViz />;
+        case "2-3":
+          return <SparseMatrixViz />;
+        case "2-4":
+          return <MultidimArrayViz />;
+        case "2-5":
+          return <StringArrayViz />;
+        default:
+          return <ArrayViz />;
+      }
     case "stack-queue":
       if (sectionId === "3-2" || sectionId === "3-4-2" || sectionId === "3-5") {
         return <StackViz />;
@@ -48,10 +76,14 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
       }
       return <StackQueuePair />;
     case "linked-list":
+      if (sectionId === "4-3") {
+        return <PolynomialListViz />;
+      }
       return <LinkedListViz initialDoubly={sectionId === "4-8"} />;
     case "trees":
       if (sectionId === "5-6") return <HeapViz />;
       if (sectionId === "5-7") return <BSTViz />;
+      if (sectionId === "5-10") return <UnionFindViz />;
       return <TreeViz />;
     case "graphs":
       return <GraphViz />;
@@ -67,6 +99,7 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
         return <SortingViz initialAlgorithm="merge" lockAlgorithm />;
       }
       if (sectionId === "7-5") return <HeapViz />;
+      if (sectionId === "7-6") return <RadixSortViz />;
       return null;
     case "hash-table":
       return <HashTableViz />;

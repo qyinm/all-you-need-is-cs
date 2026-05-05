@@ -25,7 +25,9 @@ export default function SectionPageView({
           <h1 className="font-display text-[1.75rem] font-medium leading-[1.2] text-ink md:text-[28px]">
             {section.title}
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-[1.5] text-body">{topic.subtitle}</p>
+          <p className="mx-auto mt-3 max-w-xl font-mono text-xs text-mute">
+            {topic.bookChapter} · {topic.title}
+          </p>
         </header>
 
         <div className="mb-10 space-y-4 text-left text-base leading-[1.5] text-body">
