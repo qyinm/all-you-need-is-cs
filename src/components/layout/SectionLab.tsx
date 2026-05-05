@@ -27,7 +27,6 @@ const PolynomialListViz = dynamic(() => import("@/components/viz/PolynomialListV
 });
 const UnionFindViz = dynamic(() => import("@/components/viz/UnionFindViz"), { ssr: false });
 const RadixSortViz = dynamic(() => import("@/components/viz/RadixSortViz"), { ssr: false });
-const SortingViz = dynamic(() => import("@/components/viz/SortingViz"), { ssr: false });
 const LinkedListViz = dynamic(() => import("@/components/viz/LinkedListViz"), {
   ssr: false,
 });
@@ -46,6 +45,10 @@ const TreeConceptViz = dynamic(() => import("@/components/viz/TreeConceptViz"), 
 const BSTViz = dynamic(() => import("@/components/viz/BSTViz"), { ssr: false });
 const HeapViz = dynamic(() => import("@/components/viz/HeapViz"), { ssr: false });
 const GraphViz = dynamic(() => import("@/components/viz/GraphViz"), { ssr: false });
+const InternalSortingConceptViz = dynamic(
+  () => import("@/components/viz/InternalSortingConceptViz"),
+  { ssr: false }
+);
 
 function StackQueuePair() {
   return (
@@ -132,18 +135,18 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
     case "graphs":
       return <GraphViz key={sectionId} sectionId={sectionId} />;
     case "sorting":
-      if (sectionId === "7-1") return <ArrayViz />;
-      if (sectionId === "7-2") {
-        return <SortingViz initialAlgorithm="insertion" lockAlgorithm />;
+      if (
+        sectionId === "7-1" ||
+        sectionId === "7-2" ||
+        sectionId === "7-3" ||
+        sectionId === "7-4" ||
+        sectionId === "7-5" ||
+        sectionId === "7-8"
+      ) {
+        return <InternalSortingConceptViz sectionId={sectionId} />;
       }
-      if (sectionId === "7-3") {
-        return <SortingViz initialAlgorithm="quick" lockAlgorithm />;
-      }
-      if (sectionId === "7-4") {
-        return <SortingViz initialAlgorithm="merge" lockAlgorithm />;
-      }
-      if (sectionId === "7-5") return <HeapViz />;
-      if (sectionId === "7-6") return <RadixSortViz />;
+      if (sectionId === "7-6") return <HeapViz />;
+      if (sectionId === "7-7") return <RadixSortViz />;
       return null;
     case "hash-table":
       return <HashTableViz />;

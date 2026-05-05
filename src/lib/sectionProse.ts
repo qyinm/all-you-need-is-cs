@@ -231,40 +231,52 @@ const GRAPHS: Record<string, string[]> = {
 
 const SORTING: Record<string, string[]> = {
   "7-1": [
-    "Before sorting, verifying whether a list is sorted or locating an element ties linear scan patterns to comparison counts.",
-    "The array lab illustrates sequential access patterns; merge the intuition with binary search when data is sorted and random-access.",
+    "Chapter 7 begins with searching because ordered files are one of the main reasons to sort. A file is a collection of records, and the field used for lookup is the key.",
+    "SEQSRCH scans sequentially and uses a dummy key K0 = K to avoid an extra end-of-file test. Successful search averages about (n + 1) / 2 comparisons, while unsuccessful search takes n + 1 comparisons in the dummy-record version.",
+    "For ordered sequential files, BINSRCH repeatedly compares against the middle key and cuts the remaining subfile roughly in half, giving O(log n) key comparisons. The section also discusses Fibonacci search, which avoids division by splitting according to Fibonacci numbers.",
+    "The same motivation leads to file verification: matching two unsorted files directly can cost O(mn), but sorting both files first lets VERIFY2 compare them with one linear merge-style pass after sorting.",
   ],
   "7-2": [
-    "Insertion sort maintains a sorted prefix and inserts each next element by shifting—or swapping—leftward until order holds. It is simple and adaptive: nearly sorted inputs run fast.",
-    "The locked visualization highlights comparisons and swaps as the algorithm walks the array.",
+    "Insertion sort repeatedly inserts the next record into an already ordered prefix. The textbook's INSERT uses a dummy record R0 with key -infinity so the inner loop does not need an explicit left-bound test.",
+    "INSORT starts with R1 as the ordered prefix and inserts R2 through Rn. In the worst case, INSERT(R, i) makes i + 1 comparisons, so the full sort is O(n^2).",
+    "The useful refinement is left-out-of-order behavior: if only k records are LOO, the time is O((k + 1)n). This is why insertion sort is attractive for nearly sorted inputs and very small subfiles.",
+    "The method is stable because equal keys are not moved ahead of earlier equal records.",
   ],
   "7-3": [
-    "Quicksort partitions around a pivot so smaller keys go left, larger go right, then recurses. Average time is Θ(n log n), but pivot choice matters for worst-case.",
-    "Watch how partitioning rearranges elements stepwise; contrast stability and memory use with merge sort.",
+    "Quicksort fixes one control key in its final position with respect to the whole current subfile, then sorts the left and right subfiles independently.",
+    "The textbook QSORT chooses the first record in the subfile as the control key and scans inward with i and j. The lab below uses the common Lomuto variant from GeeksforGeeks: choose the last element as pivot, scan j from low to high - 1, and keep i as the boundary of values smaller than the pivot.",
+    "Balanced partitions give T(n) = cn + 2T(n/2), hence O(n log n). The worst case is O(n^2), but the average time is O(n log n), and the text notes that quicksort has the best average behavior among the internal methods studied.",
+    "Recursive stack space is O(log n) for balanced splits and O(n) in the worst case; sorting smaller subfiles first can keep extra stack space O(log n).",
   ],
   "7-4": [
-    "Merge sort divides the range in half, recursively sorts, then merges two sorted runs with a linear-time combine. It is stable and Θ(n log n) worst case but needs Θ(n) extra space for typical array merges.",
-    "The step player emphasizes merge combine comparisons; link that with the list-merging ideas from earlier chapters.",
+    "§7.4 asks for a lower bound: if sorting algorithms can only compare and interchange keys, how fast can any comparison sort be?",
+    "The proof uses a decision tree. Each internal node is a key comparison, each branch is an outcome, and each leaf must correspond to one possible input permutation.",
+    "Sorting n distinct elements requires n! different leaves. Since a binary tree of height k has at most 2^(k-1) leaves, any decision tree that sorts n distinct elements has height at least log2(n!) + 1.",
+    "The result is the comparison-sorting lower bound: some input must take Omega(n log n) comparisons. This explains why merge sort, heap sort, and average-case quicksort are asymptotically optimal within the comparison model.",
   ],
   "7-5": [
-    "Heap sort builds a max-heap, repeatedly extracts the root to the sorted suffix, and sifts down—achieving Θ(n log n) in place with no auxiliary array for merging.",
-    "The heap visualization echoes the tree chapter; compare in-place behavior with merge sort’s scratch space.",
+    "Two-way merge sort starts with n sorted files of length 1, merges adjacent pairs into runs of length 2, then length 4, and so on until one sorted run remains.",
+    "MERGE combines two sorted subfiles in linear time by comparing the leading records. MPASS performs one pass over adjacent runs, and MSORT alternates between source array X and auxiliary array Y.",
+    "The running time is O(n log n): each pass costs O(n), and there are log2 n passes. The method is stable, but the sequential-array version needs auxiliary storage proportional to n.",
+    "The recursive formulation divides into left and right subfiles, recursively sorts them, then merges. The book also gives a linked-list merge version to avoid copying large records between arrays.",
   ],
   "7-6": [
-    "Radix sort processes digits or character positions with stable bucket passes; when the alphabet size is modest, linear-time sorts emerge under the right models.",
-    "Contrast counting-based passes with comparison lower bounds for general sorting.",
+    "Heap sort interprets the file R1 through Rn as the sequential representation of a complete binary tree: parent floor(i/2), left child 2i, right child 2i + 1.",
+    "A max heap has every parent key at least as large as its children, so the root holds the largest key. ADJUST assumes both child subtrees already satisfy the heap property and moves the root item down until the whole subtree is a heap.",
+    "HSORT first heapifies all internal nodes by calling ADJUST from floor(n/2) down to 1. It then repeatedly swaps the max root into the sorted suffix and adjusts the remaining prefix.",
+    "Heap sort is O(n log n) in worst and average cases and uses only constant extra record storage, trading away merge sort's stability and auxiliary array.",
   ],
   "7-7": [
-    "List and table sorts address linked storage and key-indexed structures where random swaps are expensive or unavailable.",
-    "Techniques include pointer rewiring merges, address-calculation sorts, and adaptations of classic algorithms to non-array sequences.",
+    "Sorting on several keys orders records lexicographically by K1, K2, ..., Kr, where K1 is most significant and Kr is least significant.",
+    "MSD sorting handles the most significant key first, then independently sorts each pile by later keys. LSD sorting starts at the least significant key and relies on a stable sort for each pass so earlier ordering is preserved.",
+    "Radix sorting treats one logical key as several subkeys, such as decimal digits. With radix r and d digits, LRSORT uses r linked queues as bins and makes d stable passes from least significant to most significant.",
+    "The textbook analysis is O(d(n + r)); the right radix depends on key range, digit count, and machine costs.",
   ],
   "7-8": [
-    "The chapter summary contrasts algorithms by stability, adaptivity, space, and typical vs. worst-case time—use it as a checklist when picking a sort in practice.",
-    "No single winner exists: problem size, memory hierarchy, and input distribution drive the choice.",
-  ],
-  "7-9": [
-    "External sorting handles data too large for memory: multiway merge passes, buffer management, and replacement selection shape run lengths on disk.",
-    "Theory from internal sorting still informs merge patterns, but I/O cost dominates the engineering story.",
+    "The practical problem in §7.8 is record movement. When records are large, physically moving entire records on every comparison or swap can dominate the sorting cost.",
+    "List sort keeps records linked in sorted order by rewiring link fields. If physical rearrangement is later required, LIST1 converts the sorted singly linked list into a doubly linked list before moving records into place.",
+    "LIST2 avoids the extra backward link by marking moved records through the existing link field. For table sort, an auxiliary table T stores the sorted permutation, so swaps move table entries instead of records.",
+    "The TABLE algorithm physically rearranges records by following disjoint cycles of the permutation. The chapter closes by comparing methods: insertion sort is good for small or nearly sorted files, quicksort has excellent average behavior, merge sort has strong worst-case behavior with extra storage, heap sort is in-place O(n log n), and radix sort depends on key/radix choices.",
   ],
 };
 
