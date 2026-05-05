@@ -141,15 +141,23 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
         sectionId === "7-3" ||
         sectionId === "7-4" ||
         sectionId === "7-5" ||
-        sectionId === "7-8"
+        sectionId === "7-6" ||
+        sectionId === "7-9" ||
+        sectionId === "7-10" ||
+        sectionId === "7-11" ||
+        sectionId === "7-11-1" ||
+        sectionId === "7-11-2" ||
+        sectionId === "7-11-3" ||
+        sectionId === "7-11-4" ||
+        sectionId === "7-11-5"
       ) {
         return <InternalSortingConceptViz sectionId={sectionId} />;
       }
-      if (sectionId === "7-6") return <HeapViz />;
-      if (sectionId === "7-7") return <RadixSortViz />;
+      if (sectionId === "7-7") return <HeapViz />;
+      if (sectionId === "7-8") return <RadixSortViz />;
       return null;
     case "hash-table":
-      return <HashTableViz />;
+      return <HashTableViz key={sectionId} sectionId={sectionId} />;
     case "heap":
       return <HeapViz />;
     case "binary-search-trees":

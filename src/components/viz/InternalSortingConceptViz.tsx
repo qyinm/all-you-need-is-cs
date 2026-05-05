@@ -770,13 +770,47 @@ function LowerBoundPanel() {
   );
 }
 
+function DefinitionsPanel() {
+  return (
+    <div className="space-y-5">
+      <p className="text-center text-sm leading-[1.43] text-body">
+        §7.2 defines sorting before introducing more algorithms. A sort permutes records so their
+        keys are nondecreasing; if equal keys preserve input order, the method is stable.
+      </p>
+
+      <div className="grid gap-3 md:grid-cols-3">
+        <Fact label="Record" value="Each record Ri has a key Ki used for ordering" />
+        <Fact label="Stable" value="Equal keys keep their original relative order" />
+        <Fact label="Location" value="Internal sorts fit in memory; external sorts use storage blocks" />
+      </div>
+
+      <div className="rounded-lg border border-hairline bg-surface-soft p-4">
+        <div className="grid gap-2 font-mono text-sm md:grid-cols-5">
+          {[
+            ["7.1", "searching"],
+            ["7.3", "insertion"],
+            ["7.4", "quick"],
+            ["7.6", "merge"],
+            ["7.11", "external"],
+          ].map(([section, item]) => (
+            <div key={item} className="rounded-md border border-hairline bg-white px-3 py-2 text-center">
+              <span className="text-mute">{section}</span>
+              <span className="ml-2 text-ink">{item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PracticalPanel() {
   const [mode, setMode] = useState<"list" | "table">("list");
 
   return (
     <div className="space-y-5">
       <p className="text-center text-sm leading-[1.43] text-body">
-        §7.8 focuses on large records: avoid moving full records during sorting, then rearrange once
+        §7.9 focuses on large records: avoid moving full records during sorting, then rearrange once
         if physical order is required.
       </p>
 
@@ -859,12 +893,124 @@ function TableSortPanel() {
   );
 }
 
+function SummaryPanel() {
+  return (
+    <div className="space-y-5">
+      <p className="text-center text-sm leading-[1.43] text-body">
+        §7.10 compares the internal sorting methods rather than introducing another algorithm.
+        The practical answer is a composite strategy, not one universal winner.
+      </p>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        {[
+          ["Insertion sort", "Best for small n and nearly ordered inputs; O(n^2) worst case."],
+          ["Quick sort", "Best average behavior in the chapter; O(n^2) worst case."],
+          ["Merge sort", "Strong worst-case behavior; needs auxiliary storage."],
+          ["Heap sort", "O(n log n) with constant extra storage; more overhead than quicksort."],
+          ["Radix sort", "Depends on key size and radix rather than comparison lower bounds."],
+          ["Composite", "Use insertion for tiny subfiles, quicksort for medium ranges, merge sort for large stable worst-case needs."],
+        ].map(([label, value]) => (
+          <Fact key={label} label={label} value={value} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ExternalSortPanel({ sectionId }: { sectionId: string }) {
+  const variant =
+    sectionId === "7-11-2"
+      ? "k-way"
+      : sectionId === "7-11-3"
+        ? "buffers"
+        : sectionId === "7-11-4"
+          ? "runs"
+          : sectionId === "7-11-5"
+            ? "optimal"
+            : "intro";
+
+  const copy = {
+    intro: [
+      "External merge sort first creates sorted runs with an internal sort.",
+      "Then it repeatedly merges runs from disk until one sorted file remains.",
+      "The dominant cost is the number of passes over blocks on external storage.",
+    ],
+    "k-way": [
+      "k-way merging combines k runs at once to reduce the number of passes.",
+      "A 4-way merge on 16 runs needs fewer levels than repeated 2-way merging.",
+      "Large k needs more buffers, so I/O savings eventually meet memory limits.",
+    ],
+    buffers: [
+      "Parallel operation needs floating input buffers and two output buffers.",
+      "The next buffer should be assigned to the run that will exhaust first.",
+      "The goal is to overlap disk input, disk output, and CPU merging.",
+    ],
+    runs: [
+      "Run generation tries to make initial runs longer than memory-sized chunks.",
+      "Longer runs reduce the number of later merge passes.",
+      "This is an I/O optimization, not a new internal comparison sort.",
+    ],
+    optimal: [
+      "When run lengths differ, merge order matters.",
+      "Merging smaller runs first reduces total record movement.",
+      "The idea is the same shape as optimal merge patterns.",
+    ],
+  }[variant];
+
+  return (
+    <div className="space-y-5">
+      <p className="text-center text-sm leading-[1.43] text-body">
+        External sorting is used when the file cannot fit in main memory. The visual model below
+        keeps the focus on runs, passes, and I/O buffers.
+      </p>
+
+      <div className="rounded-lg border border-hairline p-4">
+        <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-center">
+          <ExternalStage title="Input blocks" rows={["A1..A750", "A751..A1500", "..."]} />
+          <ArrowText />
+          <ExternalStage title="Initial runs" rows={["R1", "R2", "R3", "R4", "R5", "R6"]} />
+          <ArrowText />
+          <ExternalStage title="Merged file" rows={["one sorted run"]} />
+        </div>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-3">
+        {copy.map((item, index) => (
+          <Fact key={item} label={`Point ${index + 1}`} value={item} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ExternalStage({ title, rows }: { title: string; rows: string[] }) {
+  return (
+    <div className="rounded-lg border border-hairline bg-white p-3">
+      <h4 className="font-mono text-xs font-medium uppercase tracking-wide text-mute">{title}</h4>
+      <div className="mt-3 space-y-2">
+        {rows.map((row) => (
+          <div key={row} className="rounded border border-hairline bg-surface-soft px-3 py-2 text-center font-mono text-xs text-ink">
+            {row}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ArrowText() {
+  return <div className="hidden text-center font-mono text-sm text-mute md:block">-&gt;</div>;
+}
+
 export default function InternalSortingConceptViz({ sectionId }: { sectionId: string }) {
   if (sectionId === "7-1") return <SearchPanel />;
-  if (sectionId === "7-2") return <InsertionPanel />;
-  if (sectionId === "7-3") return <QuickSortPanel />;
-  if (sectionId === "7-4") return <LowerBoundPanel />;
-  if (sectionId === "7-5") return <MergeSortPanel />;
-  if (sectionId === "7-8") return <PracticalPanel />;
+  if (sectionId === "7-2") return <DefinitionsPanel />;
+  if (sectionId === "7-3") return <InsertionPanel />;
+  if (sectionId === "7-4") return <QuickSortPanel />;
+  if (sectionId === "7-5") return <LowerBoundPanel />;
+  if (sectionId === "7-6") return <MergeSortPanel />;
+  if (sectionId === "7-9") return <PracticalPanel />;
+  if (sectionId === "7-10") return <SummaryPanel />;
+  if (sectionId.startsWith("7-11")) return <ExternalSortPanel sectionId={sectionId} />;
   return null;
 }

@@ -70,7 +70,7 @@ export default function RadixSortViz() {
   return (
     <div className="space-y-6">
       <p className="text-center text-sm text-body">
-        Least-significant-digit radix sort: stable bucket passes per decimal place (§7.7). Numbers
+        Least-significant-digit radix sort: stable bucket passes per decimal place (§7.8). Numbers
         keep relative order within a bucket from the previous pass.
       </p>
 

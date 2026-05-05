@@ -231,75 +231,157 @@ const GRAPHS: Record<string, string[]> = {
 
 const SORTING: Record<string, string[]> = {
   "7-1": [
-    "Chapter 7 begins with searching because ordered files are one of the main reasons to sort. A file is a collection of records, and the field used for lookup is the key.",
+    "Chapter 7 begins with searching and list verification because ordered files are one of the main reasons to sort. A file is a collection of records, and the field used for lookup is the key.",
     "SEQSRCH scans sequentially and uses a dummy key K0 = K to avoid an extra end-of-file test. Successful search averages about (n + 1) / 2 comparisons, while unsuccessful search takes n + 1 comparisons in the dummy-record version.",
     "For ordered sequential files, BINSRCH repeatedly compares against the middle key and cuts the remaining subfile roughly in half, giving O(log n) key comparisons. The section also discusses Fibonacci search, which avoids division by splitting according to Fibonacci numbers.",
     "The same motivation leads to file verification: matching two unsorted files directly can cost O(mn), but sorting both files first lets VERIFY2 compare them with one linear merge-style pass after sorting.",
   ],
   "7-2": [
+    "§7.2 formally defines the sorting problem. The input is a list of records R0 through Rn-1, each with a key Ki and a transitive ordering relation on keys.",
+    "Sorting means finding a permutation sigma such that the records appear in nondecreasing key order. If equal-key records preserve their original relative order, the sorting method is stable.",
+    "The section also separates internal sorting from external sorting. Internal sorting fits entirely in main memory; external sorting is needed when the file is too large and must be processed in pieces from disk or tape.",
+    "The chapter then studies insertion sort, quick sort, merge sort, heap sort, radix sort, list/table sorts, and finally external sorting.",
+  ],
+  "7-3": [
     "Insertion sort repeatedly inserts the next record into an already ordered prefix. The textbook's INSERT uses a dummy record R0 with key -infinity so the inner loop does not need an explicit left-bound test.",
     "INSORT starts with R1 as the ordered prefix and inserts R2 through Rn. In the worst case, INSERT(R, i) makes i + 1 comparisons, so the full sort is O(n^2).",
     "The useful refinement is left-out-of-order behavior: if only k records are LOO, the time is O((k + 1)n). This is why insertion sort is attractive for nearly sorted inputs and very small subfiles.",
     "The method is stable because equal keys are not moved ahead of earlier equal records.",
   ],
-  "7-3": [
+  "7-4": [
     "Quicksort fixes one control key in its final position with respect to the whole current subfile, then sorts the left and right subfiles independently.",
     "The textbook QSORT chooses the first record in the subfile as the control key and scans inward with i and j. The lab below uses the common Lomuto variant from GeeksforGeeks: choose the last element as pivot, scan j from low to high - 1, and keep i as the boundary of values smaller than the pivot.",
     "Balanced partitions give T(n) = cn + 2T(n/2), hence O(n log n). The worst case is O(n^2), but the average time is O(n log n), and the text notes that quicksort has the best average behavior among the internal methods studied.",
     "Recursive stack space is O(log n) for balanced splits and O(n) in the worst case; sorting smaller subfiles first can keep extra stack space O(log n).",
   ],
-  "7-4": [
-    "§7.4 asks for a lower bound: if sorting algorithms can only compare and interchange keys, how fast can any comparison sort be?",
+  "7-5": [
+    "§7.5 asks for an optimal sorting time lower bound: if sorting algorithms can only compare and interchange keys, how fast can any comparison sort be?",
     "The proof uses a decision tree. Each internal node is a key comparison, each branch is an outcome, and each leaf must correspond to one possible input permutation.",
     "Sorting n distinct elements requires n! different leaves. Since a binary tree of height k has at most 2^(k-1) leaves, any decision tree that sorts n distinct elements has height at least log2(n!) + 1.",
     "The result is the comparison-sorting lower bound: some input must take Omega(n log n) comparisons. This explains why merge sort, heap sort, and average-case quicksort are asymptotically optimal within the comparison model.",
   ],
-  "7-5": [
-    "Two-way merge sort starts with n sorted files of length 1, merges adjacent pairs into runs of length 2, then length 4, and so on until one sorted run remains.",
+  "7-6": [
+    "Merge sort starts with n sorted files of length 1, merges adjacent pairs into runs of length 2, then length 4, and so on until one sorted run remains.",
     "MERGE combines two sorted subfiles in linear time by comparing the leading records. MPASS performs one pass over adjacent runs, and MSORT alternates between source array X and auxiliary array Y.",
     "The running time is O(n log n): each pass costs O(n), and there are log2 n passes. The method is stable, but the sequential-array version needs auxiliary storage proportional to n.",
-    "The recursive formulation divides into left and right subfiles, recursively sorts them, then merges. The book also gives a linked-list merge version to avoid copying large records between arrays.",
+    "The section is broader than a single 2-way picture: it also discusses O(1)-space merge mechanics, iterative merge sort, recursive merge sort, and using already sorted sublists as initial runs.",
   ],
-  "7-6": [
+  "7-7": [
     "Heap sort interprets the file R1 through Rn as the sequential representation of a complete binary tree: parent floor(i/2), left child 2i, right child 2i + 1.",
     "A max heap has every parent key at least as large as its children, so the root holds the largest key. ADJUST assumes both child subtrees already satisfy the heap property and moves the root item down until the whole subtree is a heap.",
     "HSORT first heapifies all internal nodes by calling ADJUST from floor(n/2) down to 1. It then repeatedly swaps the max root into the sorted suffix and adjusts the remaining prefix.",
     "Heap sort is O(n log n) in worst and average cases and uses only constant extra record storage, trading away merge sort's stability and auxiliary array.",
   ],
-  "7-7": [
-    "Sorting on several keys orders records lexicographically by K1, K2, ..., Kr, where K1 is most significant and Kr is least significant.",
-    "MSD sorting handles the most significant key first, then independently sorts each pile by later keys. LSD sorting starts at the least significant key and relies on a stable sort for each pass so earlier ordering is preserved.",
-    "Radix sorting treats one logical key as several subkeys, such as decimal digits. With radix r and d digits, LRSORT uses r linked queues as bins and makes d stable passes from least significant to most significant.",
-    "The textbook analysis is O(d(n + r)); the right radix depends on key range, digit count, and machine costs.",
-  ],
   "7-8": [
-    "The practical problem in §7.8 is record movement. When records are large, physically moving entire records on every comparison or swap can dominate the sorting cost.",
+    "Radix sort treats one key as several subkeys, such as decimal digits or character positions. The text presents the linked-queue version LRSORT.",
+    "The least-significant-digit method distributes records into radix queues by the current digit, then gathers the queues in order. Stability of each pass preserves the ordering created by earlier passes.",
+    "With d digits and radix r, the running time is O(d(n + r)) when distribution and collection over the r queues are linear. Its usefulness depends on key length, radix choice, and record representation.",
+  ],
+  "7-9": [
+    "List and table sorts address the cost of record movement. When records are large, physically moving whole records during every comparison or swap can dominate the sorting cost.",
     "List sort keeps records linked in sorted order by rewiring link fields. If physical rearrangement is later required, LIST1 converts the sorted singly linked list into a doubly linked list before moving records into place.",
     "LIST2 avoids the extra backward link by marking moved records through the existing link field. For table sort, an auxiliary table T stores the sorted permutation, so swaps move table entries instead of records.",
-    "The TABLE algorithm physically rearranges records by following disjoint cycles of the permutation. The chapter closes by comparing methods: insertion sort is good for small or nearly sorted files, quicksort has excellent average behavior, merge sort has strong worst-case behavior with extra storage, heap sort is in-place O(n log n), and radix sort depends on key/radix choices.",
+    "The TABLE algorithm physically rearranges records by following disjoint cycles of the permutation.",
+  ],
+  "7-10": [
+    "The chapter summary emphasizes that no one internal sorting method is best for every input size and initial ordering.",
+    "Insertion sort works well for small n and partially ordered lists. Quicksort has the best average behavior but O(n^2) worst-case behavior. Merge sort has the best worst-case behavior but needs more storage than heap sort.",
+    "The timing table in the text suggests a composite strategy: use insertion sort for very small subfiles, quicksort for medium subfiles, and merge sort when strong large-n behavior matters.",
+  ],
+  "7-11": [
+    "External sorting is used when the file is too large to fit in main memory. The chapter assumes disk storage and counts seek time, latency time, and block transmission time.",
+    "The standard method is external merge sort: internally sort chunks into runs, write the runs to external storage, then repeatedly merge runs until one sorted file remains.",
+    "Because merge only needs the leading records of each run in memory, it adapts naturally to files much larger than memory.",
+  ],
+  "7-11-1": [
+    "The introduction to external sorting defines blocks as the unit read from or written to disk. A block normally contains several records.",
+    "The worked example sorts 4500 records with memory for 750 records and block length 250, producing six initial runs and then merging them.",
+    "The analysis focuses on the number of passes over the data, because each pass causes expensive disk input and output.",
+  ],
+  "7-11-2": [
+    "k-way merging reduces the number of passes over the file by merging k runs at once instead of only two.",
+    "A 2-way merge over m runs requires about log2(m) passes, while a k-way merge requires about log_k(m) passes.",
+    "The tradeoff is memory: k input buffers plus output buffers reduce buffer size as k grows, and very large k can increase seek and latency overhead despite fewer passes.",
+  ],
+  "7-11-3": [
+    "Buffer handling tries to overlap input, output, and CPU merging. A k-way merge needs at least k input buffers and one output buffer, but parallel operation benefits from 2k input buffers and two output buffers.",
+    "The text shows that assigning two fixed buffers per run is not enough; buffers should float to the run that will exhaust records first.",
+    "Program 7.20 keeps input buffers in queues, output buffers in rotation, and a stack of free buffers so merging can continue while disk I/O is active.",
+  ],
+  "7-11-4": [
+    "Run generation asks how to create longer initial runs before the merge phase. Longer runs mean fewer later passes over external storage.",
+    "The chapter's replacement-selection style discussion uses internal memory to produce runs longer than a simple memory-sized chunk when the input order allows it.",
+    "The goal is not a new comparison sort, but better external-sort throughput by reducing the number of runs that must be merged.",
+  ],
+  "7-11-5": [
+    "Optimal merging of runs chooses a merge pattern that minimizes total merge cost when run lengths differ.",
+    "The problem is analogous to optimal merge patterns and Huffman-style combining: repeatedly merge small runs first to reduce total record movement.",
+    "This section closes the external sorting discussion by connecting run lengths, merge order, and I/O cost.",
+  ],
+  "7-12": [
+    "The references section points to further work on internal and external sorting algorithms, including implementation and empirical performance studies.",
+    "Use it as a reading list after the main algorithm pages rather than as a separate lab target.",
+  ],
+  "7-13": [
+    "The additional exercises ask for implementation, timing, worst-case data generation, random permutation tests, and comparison/exchange counting.",
+    "They are designed to make the summary concrete: the best practical sorting method depends on n, input order, record movement cost, memory, and I/O behavior.",
   ],
 };
 
 const HASH_TABLE: Record<string, string[]> = {
   "8-1": [
-    "The symbol table ADT maps keys to values with search, insert, and delete—the same logical interface appears in compilers, interpreters, and databases.",
-    "Abstracting the interface lets you swap hashing, trees, or skip lists without changing client code.",
+    "A symbol table stores pairs of the form (identifier, attributes). The ADT supports search, insert, and delete, with other operations such as modify and join built around those basics.",
+    "The chapter motivates hashing as an alternative to comparison-based search trees. Instead of walking by key comparisons, hashing computes a table address from the identifier.",
+    "The chapter is split into static hashing, where the table size is fixed, and dynamic hashing, where pages can split and coalesce as a database file grows or shrinks.",
   ],
   "8-2": [
-    "Static hashing fixes the bucket count; a hash function maps keys to buckets, ideally spreading keys uniformly before collisions arise.",
-    "Load factor governs expected probes; resizing becomes necessary when tables grow far beyond their design point.",
+    "Static hashing stores identifiers in a fixed-size hash table. A hash function f(x) maps each identifier x to a home bucket address.",
+    "A table has b buckets and each bucket has s slots. Identifier density is n / T, where T is the universe of possible identifiers; loading factor is alpha = n / (s * b).",
+    "Because b is much smaller than the identifier universe, several identifiers can map to the same bucket. These synonyms create collisions, and an overflow occurs when a new identifier hashes into a full bucket.",
+  ],
+  "8-2-1": [
+    "The text's first hash-table example uses b = 26 buckets and s = 2 slots per bucket for C library names: acos, define, float, exp, char, atan, ceil, floor, clock, and ctime.",
+    "The simple hash function uses the first character: a maps to bucket 0, c to bucket 2, d to bucket 3, and so on. This makes acos and atan synonyms, float and floor synonyms, and char and ceil synonyms.",
+    "After char and ceil fill bucket 2, clock also hashes to bucket 2 and overflows. This concrete overflow is the bridge into the collision-handling techniques in §8.2.3.",
+  ],
+  "8-2-2": [
+    "A good hash function should be easy to compute and should minimize collisions. The text calls a hash function uniform when every bucket is equally likely for a randomly selected identifier.",
+    "The four methods discussed are mid-square, division, folding, and digit analysis. Mid-square takes middle bits from x squared; division uses x % M; folding adds partitions of the key; digit analysis keeps the least skewed digit positions in a known static file.",
+    "For general-purpose symbol tables, the text prefers division with a divisor M chosen carefully. M should not be a power of two, and in practice it is enough to choose M with no prime factors less than 20.",
+  ],
+  "8-2-3": [
+    "Overflow handling first appears through linear open addressing. The table is a one-dimensional array, and an insertion probes f(x), then f(x) + 1, f(x) + 2, and so on modulo the table size until it finds the key, an empty slot, or a full-table cycle.",
+    "The worked 13-bucket example transforms keys by summing character codes. The words for, do, while, if, and else enter directly, but function hashes to the same bucket as if and is placed at bucket 0 by circular probing.",
+    "Linear probing creates clusters. Quadratic probing and rehashing reduce clustering, while chaining stores a linked list of synonyms for each home bucket so unrelated buckets are not scanned.",
+  ],
+  "8-2-4": [
+    "The theoretical evaluation separates expected behavior from the bad worst case. In the worst case, a hash-table insertion can take O(n) time if many identifiers collide.",
+    "Under uniform hashing, the expected number of probes depends strongly on the loading density alpha and the overflow method. Chaining has expected successful-search comparisons near 1 + alpha / 2.",
+    "The empirical table in the chapter compares mid-square, division, folding, digit analysis, chaining, and open addressing. Chaining generally performs better than open addressing at high load, and division is the preferred general-purpose hash function.",
   ],
   "8-3": [
-    "Good hash functions resemble pseudorandom permutations on keys: they amplify small input differences and avoid patterns that cluster buckets.",
-    "Practical mixes include multiplicative schemes, polynomial rolling hashes, and cryptographic hashes when stronger properties are needed.",
+    "Dynamic hashing targets database files whose size changes over time. A static table either wastes space when overallocated or needs expensive restructuring when it fills.",
+    "The chapter uses pages, also called buckets, with capacity p. The main cost is page access, because pages are assumed to live on disk.",
+    "Dynamic hashing, also called extendible hashing, preserves fast lookup while letting the file grow and shrink by splitting and coalescing pages.",
+  ],
+  "8-3-1": [
+    "Directory dynamic hashing maps a binary trie into a directory of page pointers. If k bits distinguish the current keys, the directory has 2^k entries.",
+    "Lookup uses the hash function to choose a directory entry, then retrieves the page pointed to by that entry. This keeps page access to two steps: directory, then page.",
+    "When a page overflows, the system allocates a new page, rehashes records using one more bit, and doubles the directory only if the page's local depth exceeds the current global depth.",
+  ],
+  "8-3-2": [
+    "The key guarantee of directory dynamic hashing is bounded access time: lookup does not walk down a long trie because the directory collapses the trie into direct page pointers.",
+    "Space utilization is measured as n / (m * p), where n is the number of records, m the number of pages, and p the page capacity.",
+    "The tradeoff is directory size. If keys are not spread uniformly, many directory entries can point to the same pages and the directory can become large.",
+  ],
+  "8-3-3": [
+    "Directoryless dynamic hashing, also called linear hashing, avoids a separate directory by mapping hash addresses directly to a contiguous set of pages.",
+    "As the file expands, pages split in a controlled order. Pages before the split pointer use one more hash bit than pages that have not yet split.",
+    "The method grows by adding one page at a time instead of doubling a directory, but overflow pages can still exist temporarily when a particular page receives too many synonyms.",
   ],
   "8-4": [
-    "Overflow handling uses chaining (lists in buckets) or open addressing (probing sequences). Each family has different cache behavior and deletion semantics.",
-    "The hashing lab visualizes collision resolution—compare separate chaining with linear probing while you read the proofs.",
-  ],
-  "8-5": [
-    "Dynamic hashing grows or shrinks buckets online—extendible hashing splits buckets using a directory; linear hashing avoids a central directory at the cost of more overflow handling.",
-    "These structures target databases and file systems where table size is unpredictable.",
+    "The references section points to classic work on hash tables, quadratic quotient hashing, extendible hashing, virtual hashing, and dynamic hashing schemes.",
+    "For this app, §8.4 is a stopping point rather than a separate lab: review the static and dynamic panels, then compare the overflow strategies against the exercises.",
   ],
 };
 
