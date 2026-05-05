@@ -100,7 +100,7 @@ export const PHASE1_TOPICS: Topic[] = [
     id: "trees",
     title: "Trees",
     subtitle:
-      "Binary trees and traversals from Ch. 5—preorder, inorder, postorder on a worked example.",
+      "Ch. 5 rebuilt from the lecture PDF: tree terminology, binary-tree representations, traversals, threads, heaps, BSTs, selection trees, and union-find.",
     complexity: "medium",
     bookChapter: "Ch. 5",
     outline: [

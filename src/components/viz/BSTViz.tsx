@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import P5Wrapper, { type SketchFunction } from "@/components/viz/P5Wrapper";
 
 interface BSTNode {
@@ -18,7 +18,9 @@ export default function BSTViz() {
   const rootRef = useRef(root);
   const hlRef = useRef<number[]>([]);
 
-  rootRef.current = root;
+  useEffect(() => {
+    rootRef.current = root;
+  }, [root]);
 
   const sketch: SketchFunction = useCallback((p) => {
     p.setup = () => {
@@ -33,42 +35,42 @@ export default function BSTViz() {
 
       if (node.left) {
         const lx = x - gap;
-        const ly = y + 70;
-        p.stroke(0, 0, 25);
-        p.strokeWeight(2);
+        const ly = y + 72;
+        p.stroke(0, 0, 82);
+        p.strokeWeight(1.5);
         p.line(x, y + 22, lx, ly - 22);
         drawBST(node.left, lx, ly, level + 1, maxW);
       }
       if (node.right) {
         const rx = x + gap;
-        const ry = y + 70;
-        p.stroke(0, 0, 25);
-        p.strokeWeight(2);
+        const ry = y + 72;
+        p.stroke(0, 0, 82);
+        p.strokeWeight(1.5);
         p.line(x, y + 22, rx, ry - 22);
         drawBST(node.right, rx, ry, level + 1, maxW);
       }
 
       const isHighlighted = hl.includes(node.value);
       p.push();
-      p.fill(isHighlighted ? 45 : 260, isHighlighted ? 85 : 25, isHighlighted ? 90 : 16);
-      p.stroke(isHighlighted ? 50 : 260, isHighlighted ? 90 : 50, isHighlighted ? 100 : 50);
-      p.strokeWeight(2);
+      p.fill(0, 0, isHighlighted ? 0 : 100);
+      p.stroke(0, 0, isHighlighted ? 0 : 72);
+      p.strokeWeight(1.5);
       p.ellipse(x, y, 44, 44);
-      p.fill(0, 0, isHighlighted ? 15 : 90);
+      p.fill(0, 0, isHighlighted ? 100 : 0);
       p.textSize(14);
       p.text(node.value, x, y);
       p.pop();
     };
 
     p.draw = () => {
-      p.background(225, 10, 8);
+      p.background(0, 0, 98);
       if (!rootRef.current) {
-        p.fill(0, 0, 25);
+        p.fill(0, 0, 45);
         p.textSize(13);
         p.text("Empty BST", p.width / 2, p.height / 2);
         return;
       }
-      drawBST(rootRef.current, p.width / 2, 40, 0, p.width * 0.7);
+      drawBST(rootRef.current, p.width / 2, 44, 0, p.width * 0.5);
     };
   }, []);
 
@@ -180,7 +182,7 @@ export default function BSTViz() {
           onClick={() => setRoot(buildSampleBST())}
           className="ui-btn-secondary"
         >
-          🎲 Reset
+          Reset
         </button>
       </div>
       <p className="ui-caption text-center">

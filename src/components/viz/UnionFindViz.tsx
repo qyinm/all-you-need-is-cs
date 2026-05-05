@@ -6,7 +6,7 @@ const N = 8;
 
 function findRoot(parent: number[], i: number): number {
   let p = i;
-  while (parent[p] !== p) {
+  while (parent[p] >= 0) {
     p = parent[p];
   }
   return p;
@@ -14,7 +14,7 @@ function findRoot(parent: number[], i: number): number {
 
 export default function UnionFindViz() {
   const [parent, setParent] = useState<number[]>(() =>
-    Array.from({ length: N }, (_, i) => i)
+    Array.from({ length: N }, () => -1)
   );
 
   const clusters = useMemo(() => {
@@ -34,19 +34,27 @@ export default function UnionFindViz() {
       const ra = findRoot(p, a);
       const rb = findRoot(p, b);
       if (ra === rb) return prev;
-      p[rb] = ra;
+      const sizeA = -p[ra];
+      const sizeB = -p[rb];
+      if (sizeA < sizeB) {
+        p[rb] -= sizeA;
+        p[ra] = rb;
+      } else {
+        p[ra] -= sizeB;
+        p[rb] = ra;
+      }
       return p;
     });
   }, []);
 
   const reset = () =>
-    setParent(Array.from({ length: N }, (_, i) => i));
+    setParent(Array.from({ length: N }, () => -1));
 
   return (
     <div className="space-y-6">
       <p className="text-center text-sm text-body">
-        Disjoint sets: each element points to a parent until the representative (self-loop). Union
-        attaches one root under another—§5.10 preview; path compression can flatten on find.
+        Disjoint sets: roots store a negative set size; non-roots store the parent index.
+        Weighted union attaches the smaller tree under the larger root.
       </p>
 
       <div className="flex flex-wrap justify-center gap-2">
@@ -75,7 +83,7 @@ export default function UnionFindViz() {
 
       <div className="mx-auto max-w-2xl overflow-x-auto rounded-lg border border-hairline bg-surface-soft p-4">
         <h3 className="mb-3 font-mono text-xs font-medium uppercase tracking-wide text-mute">
-          parent[i] (tree edges i → parent[i])
+          parent[i] (negative value means root and set size)
         </h3>
         <div className="flex flex-wrap justify-center gap-2 font-mono text-xs sm:text-sm">
           {parent.map((pr, i) => (
@@ -84,7 +92,7 @@ export default function UnionFindViz() {
               className="flex min-w-[3.5rem] flex-col items-center rounded border border-hairline bg-canvas px-2 py-1.5"
             >
               <span className="text-mute">i={i}</span>
-              <span className="text-ink">→ {pr}</span>
+              <span className="text-ink">{pr < 0 ? `size ${-pr}` : `-> ${pr}`}</span>
             </div>
           ))}
         </div>
@@ -107,8 +115,8 @@ export default function UnionFindViz() {
       </div>
 
       <p className="ui-caption text-center">
-        Quick union: attach roots only; repeated unions merge whole sets. Rank/size heuristics
-        keep trees shallow in the full algorithm.
+        Weighted union: attach roots only, store set size at roots, and keep the tree height
+        logarithmic before collapsing find flattens paths.
       </p>
     </div>
   );

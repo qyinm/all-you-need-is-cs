@@ -141,48 +141,59 @@ const LINKED_LIST: Record<string, string[]> = {
 
 const TREES: Record<string, string[]> = {
   "5-1": [
-    "A tree generalizes lists to hierarchical data: a root with subtrees, parent/child relationships, depth, height, and ordered vs. unordered variants.",
-    "Representations include first-child/next-sibling links, parent arrays, and explicit edge lists—each suits different navigation patterns.",
+    "Chapter 5 starts by contrasting linear structures with tree structures: arrays, stacks, queues, and linked lists move along one dimension, while a tree organizes data hierarchically from a distinguished root.",
+    "A tree is a finite nonempty set of nodes with one root; the remaining nodes are partitioned into disjoint subtrees. The lecture uses the usual vocabulary: degree of a node, degree of a tree, leaf, parent, child, sibling, ancestor, descendant, level, and height.",
+    "The PDF emphasizes representations before algorithms. General trees can be written in list form where parentheses raise and lower the level, but fixed-size nodes are easier to implement. The left-child/right-sibling representation gives every node two links and shows why every general tree can be rotated into an equivalent degree-two, binary-style representation.",
   ],
   "5-2": [
-    "A binary tree restricts nodes to at most two children, labeled left and right. Full, complete, and height-balanced shapes have strict counting properties.",
-    "Array storage works for heaps; linked nodes are flexible when the tree is irregular.",
+    "A binary tree is either empty or consists of a root and two disjoint binary trees called the left subtree and right subtree. That empty-tree case, and the left/right order of children, are the main differences from an ordinary tree in this lecture.",
+    "The key counting facts are central: level i has at most 2^(i-1) nodes, and a depth-k binary tree has at most 2^k - 1 nodes. In any nonempty binary tree, if n0 is the number of leaves and n2 is the number of degree-two nodes, then n0 = n2 + 1.",
+    "A full binary tree of depth k has exactly 2^k - 1 nodes. A complete binary tree fills positions from 1 through n in the corresponding full tree, which enables array storage: parent(i) = floor(i/2), left child = 2i, and right child = 2i + 1 when those indices stay within n. Irregular binary trees use linked nodes with data, leftChild, and rightChild fields.",
   ],
   "5-3": [
-    "Traversals—preorder, inorder, postorder, level-order—visit every node once in a disciplined order. Inorder on a BST visits keys sorted order.",
-    "The tree lab animates traversals on a fixed example; compare the visit order with the textbook’s trace tables.",
+    "Traversal is described by the relative order of left subtree (L), node visit (V), and right subtree (R). With left before right, the three standard orders are inorder LVR, preorder VLR, and postorder LRV.",
+    "For the PDF's worked tree, the lecture writes examples such as inorder HDIBEAFCG, postorder HIDEBFGCA, preorder ABDHIECFG, and level order ABCDEFGHI. The important habit is to state the visit rule first, then trace the same tree without changing the structure.",
+    "Recursive traversal follows a small template: stop at NULL, recurse left or right as required, and print the node at the V position. Iterative inorder simulates recursion with a stack: walk left until NULL, pop and visit the parent, then continue into the right subtree. Level-order traversal uses a queue rather than a stack.",
   ],
   "5-4": [
-    "Additional operations include computing size, height, mirroring, copying, and threading for iterators. Many are elegant recursive templates.",
-    "Iterative versions use explicit stacks or parent pointers when recursion depth is a concern.",
+    "The additional operations in the PDF reuse traversal structure rather than introducing a new data structure. Copying a binary tree allocates a new node for the root, recursively copies the left subtree, and recursively copies the right subtree; NULL children remain NULL.",
+    "Testing equality also mirrors the tree shape: two NULL trees are equal, two non-NULL nodes are equal only when their data matches and both left and right subtrees are equal. A node matched against NULL immediately fails.",
+    "These functions are useful because they expose the core binary-tree recursion pattern: handle the empty case, do local work, and delegate the same operation to the two subtrees.",
   ],
   "5-5": [
-    "Threaded trees store successor/predecessor hints in null child links to accelerate inorder walks without a stack or recursion.",
-    "The bit overhead buys O(1) next-step time after setup; maintenance is trickier on insert and delete.",
+    "A binary tree with n nodes has 2n child links, but only n - 1 of them are real edges, leaving n + 1 NULL links. A threaded binary tree replaces those NULL links with threads to useful inorder neighbors.",
+    "The lecture's rule is: if leftChild is NULL, point it to the inorder predecessor; if rightChild is NULL, point it to the inorder successor. Extra tag bits such as leftThread and rightThread distinguish a thread from a real child pointer.",
+    "The key operation is insucc: if the right link is a thread, the successor is reached directly; otherwise move to the right child and then as far left as possible. Repeatedly calling insucc performs inorder traversal without recursion or an explicit stack.",
   ],
   "5-6": [
-    "A heap is a complete binary tree with the heap order property (min-heap or max-heap). It underlies priority queues and heap sort.",
-    "The heap lab shows sift-up and sift-down; array indexing maps parent/child positions without explicit pointers.",
+    "The PDF introduces heaps through priority queues: a normal queue is FIFO, but a priority queue removes the item with highest or lowest priority first. Unordered arrays insert in Θ(1) but delete in Θ(n); sorted structures reverse that tradeoff. A heap gives O(log n) insertion and deletion.",
+    "A max heap is a complete binary tree that is also a max tree: every node key is no smaller than its children. A min heap is the symmetric version. Because the tree is complete, the implementation uses an array starting at index 1.",
+    "Insertion appends the new item at the next leaf and moves it upward while it is larger than its parent in a max heap. Deletion removes the root, places the last element in a temporary variable, repeatedly promotes the larger child downward, and finally stores the temp item. Both operations walk one root-to-leaf path, so their time is O(log2 n).",
   ],
   "5-7": [
-    "A binary search tree orders keys so inorder traversal is sorted; search, insert, and delete follow a single path from the root.",
-    "Degenerate shapes behave like lists; balanced variants in Ch. 10 restore logarithmic height guarantees.",
+    "A binary search tree is a binary tree where each element has a unique key, every key in the left subtree is smaller than the root key, every key in the right subtree is larger, and both subtrees are themselves BSTs.",
+    "Search follows one path: compare the target key with the current node, go left if smaller, right if larger, and stop on match or NULL. Insert first performs this search; if the key is absent, the new node is linked at the last comparison point.",
+    "Deletion has three cases: remove a leaf, replace a one-child node with its child, or replace a two-child node with either the largest key in the left subtree or the smallest key in the right subtree. Search, insert, and delete are O(h), where h is tree height; sorted insertion can make h = n, which motivates balanced trees such as AVL, 2-3, and red-black trees.",
   ],
   "5-8": [
-    "Selection trees help k-way merging by keeping partial winners in a tree structure—useful in external sorting and multi-stream algorithms.",
-    "They illustrate how auxiliary tree structures reduce repeated comparisons.",
+    "Selection trees solve the k-way merge problem from the lecture example: if eight already ordered sequences must be merged into one ordered sequence, repeatedly scanning all runs costs too many comparisons per output.",
+    "A winner tree is a complete binary tree whose leaves represent the current front record of each run, and each internal node stores the smaller winner of its two children. The root therefore identifies the next global minimum.",
+    "Initial setup costs O(k). After outputting one record, only the path from that run's leaf to the root must be rebuilt, costing O(log2 k). Merging n total records with k runs therefore costs O(n log2 k) after setup.",
   ],
   "5-9": [
-    "A forest is a collection of disjoint trees; converting to a single binary tree (left-child/right-sibling) often simplifies algorithms.",
-    "Union on forests links roots and is a preview of union/find optimizations.",
+    "This app keeps §5.9 as a stable section even though the attached PDF's contents page jumps from selection trees to §5.10. The closest PDF-backed material is the earlier conversion from general trees to binary trees.",
+    "A forest can be viewed as multiple disjoint trees; with the left-child/right-sibling representation, the roots and siblings can be chained using the same two-link node shape used for binary-style trees.",
+    "That conversion matters because it lets algorithms written for binary links process ordinary hierarchical data without requiring variable-sized child arrays at every node.",
   ],
   "5-10": [
-    "Set representation with union–find supports merge and query operations; path compression and union by rank keep operations nearly constant amortized.",
-    "The text builds intuition before the more formal amortized analysis in later chapters.",
+    "Disjoint sets partition elements 0 through n - 1 into nonoverlapping groups. Find(i) returns the representative set containing i, and Union(i, j) merges two sets.",
+    "The lecture represents each set as a tree stored in a parent array. A root has a negative parent value, while a non-root stores the index of its parent. simpleFind follows parent pointers to a root; simpleUnion makes one root point to the other.",
+    "The improvement is weighted union: store the negative size at each root and attach the smaller tree under the larger tree. This bounds the height of a weighted-union tree by floor(log2 n) + 1. Collapsing find then compresses every node on the search path directly under the root, making repeated finds much faster.",
   ],
   "5-11": [
-    "Catalan numbers count distinct binary tree shapes with n nodes; related bijections appear in parsing and combinatorics.",
-    "The closed form and recurrence give a sandbox for induction-style proofs about tree enumeration.",
+    "The current app keeps §5.11 for continuity with the original outline, but the provided PDF ends its Chapter 5 lecture with collapsing find and does not include a counting-binary-trees section.",
+    "Use this page as the bridge from the PDF's counting lemmas to the broader textbook topic: level counts, full-tree node counts, and the leaf/internal-node identity are the counting tools that appear explicitly in the slides.",
+    "If the full textbook section is added later, this is where Catalan-style counts of distinct binary tree shapes should live; for now, the PDF-backed study target is the earlier property set from §5.2.",
   ],
 };
 

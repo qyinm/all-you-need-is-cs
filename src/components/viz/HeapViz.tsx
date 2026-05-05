@@ -1,23 +1,22 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import P5Wrapper, { type SketchFunction } from "@/components/viz/P5Wrapper";
 
-interface HeapNode {
-  value: number;
-  index: number;
-}
+const MAX_HEAP_SAMPLE = [100, 90, 60, 70, 50, 15, 55, 20];
+const MIN_HEAP_SAMPLE = [10, 20, 15, 40, 70, 60, 55, 100];
 
 export default function HeapViz() {
-  const [heap, setHeap] = useState<number[]>([10, 20, 30, 40, 50, 60, 70]);
+  const [heap, setHeap] = useState<number[]>(MAX_HEAP_SAMPLE);
   const [isMax, setIsMax] = useState(true);
   const [animating, setAnimating] = useState<"up" | "down" | null>(null);
-  const [animIdx, setAnimIdx] = useState(-1);
   const [insertVal, setInsertVal] = useState("");
   const heapRef = useRef(heap);
   const animRef = useRef({ type: null as string | null, idx: -1, progress: 0 });
 
-  heapRef.current = heap;
+  useEffect(() => {
+    heapRef.current = heap;
+  }, [heap]);
 
   const sketch: SketchFunction = useCallback((p) => {
     p.setup = () => {
@@ -33,17 +32,17 @@ export default function HeapViz() {
 
       if (left < arr.length) {
         const lx = x - gap;
-        const ly = y + 70;
-        p.stroke(0, 0, 25);
-        p.strokeWeight(2);
+        const ly = y + 72;
+        p.stroke(0, 0, 82);
+        p.strokeWeight(1.5);
         p.line(x, y + 22, lx, ly - 22);
         drawHeap(arr, left, lx, ly, level + 1, maxW);
       }
       if (right < arr.length) {
         const rx = x + gap;
-        const ry = y + 70;
-        p.stroke(0, 0, 25);
-        p.strokeWeight(2);
+        const ry = y + 72;
+        p.stroke(0, 0, 82);
+        p.strokeWeight(1.5);
         p.line(x, y + 22, rx, ry - 22);
         drawHeap(arr, right, rx, ry, level + 1, maxW);
       }
@@ -54,25 +53,25 @@ export default function HeapViz() {
       p.push();
       p.translate(x, y);
       p.scale(scale);
-      p.fill(isAnim ? 45 : 260, isAnim ? 85 : 25, isAnim ? 90 : 16);
-      p.stroke(isAnim ? 50 : 260, isAnim ? 90 : 50, isAnim ? 100 : 50);
-      p.strokeWeight(2);
+      p.fill(0, 0, isAnim ? 0 : 100);
+      p.stroke(0, 0, isAnim ? 0 : 72);
+      p.strokeWeight(1.5);
       p.ellipse(0, 0, 44, 44);
-      p.fill(0, 0, isAnim ? 15 : 90);
+      p.fill(0, 0, isAnim ? 100 : 0);
       p.textSize(14);
       p.text(arr[idx], 0, 0);
       p.pop();
     };
 
     p.draw = () => {
-      p.background(225, 10, 8);
+      p.background(0, 0, 98);
       if (heapRef.current.length === 0) {
-        p.fill(0, 0, 25);
+        p.fill(0, 0, 45);
         p.textSize(13);
         p.text("Empty heap", p.width / 2, p.height / 2);
         return;
       }
-      drawHeap(heapRef.current, 0, p.width / 2, 40, 0, p.width * 0.7);
+      drawHeap(heapRef.current, 0, p.width / 2, 44, 0, p.width * 0.5);
     };
   }, []);
 
@@ -119,7 +118,6 @@ export default function HeapViz() {
     const newHeap = [...heap, val];
     setHeap(newHeap);
     setAnimating("up");
-    setAnimIdx(newHeap.length - 1);
     animRef.current = { type: "up", idx: newHeap.length - 1, progress: 0 };
 
     const steps = bubbleUp(newHeap, newHeap.length - 1);
@@ -132,7 +130,6 @@ export default function HeapViz() {
       } else {
         clearInterval(interval);
         setAnimating(null);
-        setAnimIdx(-1);
         animRef.current = { type: null, idx: -1, progress: 0 };
       }
     }, 400);
@@ -147,7 +144,6 @@ export default function HeapViz() {
     const newHeap = [heap[heap.length - 1], ...heap.slice(1, -1)];
     setHeap(newHeap);
     setAnimating("down");
-    setAnimIdx(0);
     animRef.current = { type: "down", idx: 0, progress: 0 };
 
     const steps = bubbleDown(newHeap);
@@ -160,15 +156,27 @@ export default function HeapViz() {
       } else {
         clearInterval(interval);
         setAnimating(null);
-        setAnimIdx(-1);
         animRef.current = { type: null, idx: -1, progress: 0 };
       }
     }, 400);
   };
 
+  const resetHeap = (nextIsMax = isMax) => {
+    const nextHeap = nextIsMax ? MAX_HEAP_SAMPLE : MIN_HEAP_SAMPLE;
+    setHeap(nextHeap);
+    heapRef.current = nextHeap;
+    animRef.current = { type: null, idx: -1, progress: 0 };
+    setAnimating(null);
+  };
+
+  const toggleHeapKind = (checked: boolean) => {
+    setIsMax(checked);
+    resetHeap(checked);
+  };
+
   return (
     <div className="space-y-4">
-      <P5Wrapper sketch={sketch} className="min-h-[400px]" />
+      <P5Wrapper sketch={sketch} className="min-h-[360px]" />
 
       <div className="flex flex-wrap items-center gap-2 justify-center">
         <input
@@ -195,15 +203,20 @@ export default function HeapViz() {
           Extract {isMax ? "Max" : "Min"}
         </button>
         <label className="ui-label flex cursor-pointer items-center gap-1.5">
-          <input type="checkbox" checked={isMax} onChange={(e) => setIsMax(e.target.checked)} className="accent-[var(--color-primary)]" />
+          <input
+            type="checkbox"
+            checked={isMax}
+            onChange={(e) => toggleHeapKind(e.target.checked)}
+            className="accent-[var(--color-primary)]"
+          />
           Max Heap
         </label>
         <button
           type="button"
-          onClick={() => setHeap([10, 20, 30, 40, 50, 60, 70])}
+          onClick={() => resetHeap()}
           className="ui-btn-secondary"
         >
-          🎲 Reset
+          Reset
         </button>
       </div>
       <p className="ui-caption text-center">

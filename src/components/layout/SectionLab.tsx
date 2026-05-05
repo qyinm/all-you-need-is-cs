@@ -42,6 +42,7 @@ const HashTableViz = dynamic(() => import("@/components/viz/HashTableViz"), {
   ssr: false,
 });
 const TreeViz = dynamic(() => import("@/components/viz/TreeViz"), { ssr: false });
+const TreeConceptViz = dynamic(() => import("@/components/viz/TreeConceptViz"), { ssr: false });
 const BSTViz = dynamic(() => import("@/components/viz/BSTViz"), { ssr: false });
 const HeapViz = dynamic(() => import("@/components/viz/HeapViz"), { ssr: false });
 const GraphViz = dynamic(() => import("@/components/viz/GraphViz"), { ssr: false });
@@ -115,6 +116,18 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
       if (sectionId === "5-6") return <HeapViz />;
       if (sectionId === "5-7") return <BSTViz />;
       if (sectionId === "5-10") return <UnionFindViz />;
+      if (
+        sectionId === "5-1" ||
+        sectionId === "5-2" ||
+        sectionId === "5-3" ||
+        sectionId === "5-4" ||
+        sectionId === "5-5" ||
+        sectionId === "5-8" ||
+        sectionId === "5-9" ||
+        sectionId === "5-11"
+      ) {
+        return <TreeConceptViz sectionId={sectionId} />;
+      }
       return <TreeViz />;
     case "graphs":
       return <GraphViz />;
