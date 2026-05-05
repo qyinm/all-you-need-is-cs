@@ -387,67 +387,209 @@ const HASH_TABLE: Record<string, string[]> = {
 
 const HEAP_CH: Record<string, string[]> = {
   "9-1": [
-    "A priority queue orders items by priority: insert and delete-min (or delete-max) dominate. Heaps implement these in logarithmic time on a complete binary tree.",
-    "This chapter generalizes the heap preview from trees and sorting into a fuller ADT discussion.",
+    "Chapter 9 starts with double-ended priority queues: insert an arbitrary key, delete the minimum key, and delete the maximum key. A normal min heap or max heap supports only one deletion direction, so the chapter introduces structures that support both or that make merging priority queues efficient.",
+    "The first structure is the min–max heap. It keeps the complete-tree array layout from ordinary heaps, but alternates min levels and max levels so the root exposes the minimum and a top max level exposes the maximum.",
+  ],
+  "9-1-1": [
+    "A min–max heap is a complete binary tree whose root is on a min level. At a min-level node, the node stores the minimum key in its subtree; at a max-level node, it stores the maximum key in its subtree.",
+    "Because the tree is complete, it uses the same array representation as the binary heaps from Chapter 5. The new invariant is not parent-versus-child only; a value must be checked against ancestors on matching min or max levels.",
+  ],
+  "9-1-2": [
+    "Insertion first appends a new leaf, preserving the complete tree shape. The inserted key is compared with its parent to decide whether it belongs on the min-level path or the max-level path.",
+    "If the new key violates the parent side, the parent moves down and the item is verified against grandparents on alternating levels. Only one rootward path is touched, so insertion remains O(log n).",
+  ],
+  "9-1-3": [
+    "Deleting the minimum removes the root, then uses the last leaf value to repair the hole. The algorithm repeatedly chooses an appropriate child or grandchild so the min-level invariant is restored while the empty position moves downward.",
+    "The final displaced value is inserted into the last hole with local checks against parent and grandchildren. The delete-max operation is symmetric on the max side of the top levels.",
   ],
   "9-2": [
-    "Insertion appends at the next leaf position and bubbles up; deletion swaps root with last leaf, removes the leaf, and sifts down.",
-    "The lab duplicates those mechanics; rehearsal here pays off for understanding heap sort and graph algorithms using priority queues.",
+    "A deap is another double-ended priority queue. It is a complete binary tree with an empty root, a min heap on the left, a max heap on the right, and partner links that connect corresponding positions across the two sides.",
+    "The cross-side ordering rule says each min-side key is less than or equal to its max partner. That rule lets the structure expose both extremes while still using heap-style root-to-leaf repair paths.",
+  ],
+  "9-2-1": [
+    "In a deap, position 1 is unused. The left subtree is the min heap, the right subtree is the max heap, and every node on one side has a corresponding partner on the other side when the shape permits.",
+    "The partner relationship is the extra invariant beyond the two ordinary heap properties: min-side items must not exceed their max-side partners.",
+  ],
+  "9-2-2": [
+    "Insertion appends the new item at the next complete-tree position, then determines whether that position lies on the min side or the max side. The item is compared with its partner on the opposite side.",
+    "If the partner invariant is violated, the partner item moves into the new position and the inserted item is routed into the opposite heap. Otherwise it is inserted into the heap side where the new position already belongs. The height bound keeps the time O(log n).",
+  ],
+  "9-2-3": [
+    "Delete-min removes the min-side root. The algorithm moves the smaller child upward along the min heap until a leaf hole is reached, then inserts the last deap item into that hole while checking its max partner.",
+    "Delete-max is symmetric. The chapter compares min–max heaps and deaps through worst-case comparison counts and empirical exercises.",
   ],
   "9-3": [
-    "Min–max heaps support both min- and max-queries; deaps double-ended heaps refine the idea for symmetric access patterns.",
-    "They trade implementation complexity for improved bounds on specific operation mixes.",
+    "Leftist trees extend priority queues in a different direction: they support combine, which merges two priority queues into one. Ordinary binary heaps need O(n) time to combine, but leftist trees combine in O(log n).",
+    "The leftist invariant uses shortest(x), the length of the shortest path from x to an external node. Every internal node keeps shortest(left child) >= shortest(right child), so the rightmost path is logarithmically short.",
+    "A min-leftist tree is both a leftist tree and a min tree. Insert combines the current tree with a one-node tree; delete-min combines the old root's left and right subtrees.",
   ],
   "9-4": [
-    "Leftist and binomial heaps offer merge-friendly mergeable heaps with structural invariants beyond the binary array heap.",
-    "Amortized bounds often shine when unions of heaps happen frequently.",
+    "Binomial heaps support insert, combine, and delete-min using a collection of min-trees. The chapter calls these B-heaps and represents root lists and sibling lists with circular doubly linked lists.",
+    "The important shift is amortized analysis: an individual operation can be expensive, but over a sequence the charged cost stays small.",
+  ],
+  "9-4-1": [
+    "Cost amortization moves part of an expensive operation's cost onto earlier cheap operations, as long as the total charged cost still covers total actual cost.",
+    "The chapter uses this accounting view to explain how a priority-queue structure can have occasional costly delete-min work while still giving a strong bound over a long operation sequence.",
+  ],
+  "9-4-2": [
+    "A min-binomial heap is a collection of min-trees. Each node stores its degree, one child pointer, left and right sibling links, and data.",
+    "The roots of the component min-trees form a circular doubly linked list. Children of a node also form a circular sibling list.",
+  ],
+  "9-4-3": [
+    "Insertion into a binomial heap is cheap because a new item can start as a one-node min-tree and be added to the root list.",
+    "The later consolidation work is charged through the amortized analysis rather than paid eagerly on every insert.",
+  ],
+  "9-4-4": [
+    "Combine joins the root lists of two B-heaps. This gives the mergeable-heap operation that ordinary array heaps lack.",
+    "The operation is intentionally inexpensive in the representation; structural cleanup is handled during delete-min and analyzed over operation sequences.",
+  ],
+  "9-4-5": [
+    "Delete-min finds and removes the root with the smallest key, then joins its child trees back into the heap and combines equal-degree trees as needed.",
+    "The work resembles binary carrying: when two trees of the same degree appear, one becomes a child of the other so each degree is represented in a controlled way.",
+  ],
+  "9-4-6": [
+    "The binomial-heap analysis bounds sequences of insert, combine, and delete-min operations. Insert and combine can be O(1) amortized; delete-min is O(log n) amortized.",
+    "This section is the bridge from concrete pointer operations to the more aggressive Fibonacci heap bounds in §9.5.",
   ],
   "9-5": [
-    "Fibonacci heaps achieve excellent amortized bounds for decrease-key, which improves theoretical performance of algorithms such as Dijkstra with many relaxations.",
-    "Implementation intricacy limits day-to-day use but informs what priority-queue operations can asymptotically achieve.",
+    "Fibonacci heaps generalize the binomial-heap idea by delaying more restructuring. They support insert and combine cheaply, and they make decrease-key especially efficient in amortized terms.",
+    "The tradeoff is implementation complexity: lazy cuts, marked nodes, and later consolidation replace the simpler eager shape discipline of binary heaps.",
+  ],
+  "9-5-1": [
+    "An F-heap is a collection of heap-ordered trees with a pointer to the current minimum. It does not force the same rigid degree structure after every update.",
+    "That looseness is deliberate. The heap postpones consolidation so cheap operations stay cheap.",
+  ],
+  "9-5-2": [
+    "Deleting from an F-heap removes the minimum root, promotes its children into the root list, and then consolidates roots so degree growth stays controlled.",
+    "This is where much of the delayed structural cost is paid.",
+  ],
+  "9-5-3": [
+    "Decrease-key lowers a node's key. If the new key violates heap order with its parent, the node is cut from its parent and moved to the root list.",
+    "This operation is central to graph algorithms with many priority decreases.",
+  ],
+  "9-5-4": [
+    "Cascading cut is the rule that keeps lazy decrease-key from damaging the heap too much. After a child is cut, a marked parent may also be cut and moved upward.",
+    "The mark records whether a node has already lost a child since becoming a child itself.",
+  ],
+  "9-5-5": [
+    "The amortized analysis for Fibonacci heaps shows excellent sequence bounds: cheap insert/combine behavior, logarithmic delete-min, and very low amortized decrease-key cost.",
+    "The proof relies on the potential stored in roots and marked nodes.",
+  ],
+  "9-5-6": [
+    "The textbook highlights Fibonacci heaps because their decrease-key bound improves theoretical running times for algorithms such as Dijkstra's shortest paths when many relaxations occur.",
+    "In practice, simpler heaps often win on constants, but the structure shows what the priority-queue interface can achieve asymptotically.",
   ],
   "9-6": [
-    "Amortized analysis aggregates costs over sequences—aggregate, accounting, and potential methods explain why cheap operations can subsidize rare expensive ones.",
-    "Fibonacci heap proofs are a flagship example; connect back to union/find analysis in trees.",
+    "The references section points outward from the chapter's heap structures. For this app, use it as a review stop: compare which structures optimize double-ended deletion, merge, decrease-key, or amortized sequence behavior.",
   ],
 };
 
 const BST_ADV: Record<string, string[]> = {
   "10-1": [
-    "Balanced search trees keep height O(log n) so searches and updates stay logarithmic. The chapter surveys several historical and practical designs.",
-    "Compare structural rotation ideas across AVL, red-black, and splay variants.",
+    "Optimal binary search trees model a static identifier set: the table is known, no insertions or deletions occur, and searches have known success and failure probabilities.",
+    "The cost measure counts levels for successful searches and external failure nodes for unsuccessful searches. Dynamic programming computes the tree with minimum expected cost, using Knuth's range restriction to reduce the table computation to O(n^2).",
   ],
   "10-2": [
-    "Optimal BSTs minimize expected search cost given key frequencies (and dummy probabilities for misses); dynamic programming fills optimal subtree tables.",
-    "The construction differs from self-adjusting online trees—here the distribution is known up front.",
+    "AVL trees are dynamic binary search trees balanced by subtree height. Every node has balance factor -1, 0, or 1, where the factor is left height minus right height.",
+    "Insertion is ordinary BST insertion followed by local repair. The four rotation cases are LL, RR, LR, and RL, classified by the nearest ancestor whose balance factor becomes ±2.",
+    "The minimum-node recurrence for height-balanced trees follows Fibonacci growth, so AVL tree height is O(log n) and search, insert, and delete remain logarithmic in the worst case.",
   ],
   "10-3": [
-    "AVL trees enforce a balance factor on every node (−1, 0, 1) using rotations after insert or delete. Height stays 1.44 log n in the worst case.",
-    "Trace single and double rotations on paper alongside the BST lab’s shape (conceptual, not AVL-specific in code).",
+    "A 2–3 tree is a balanced search tree whose internal nodes are either 2-nodes with one key and two children or 3-nodes with two keys and three children. All external nodes stay at the same level.",
+    "Searching chooses among child intervals inside each node. Insertion and deletion preserve balance through splitting, promotion, rotation, and combining.",
+    "The operations are logarithmic because every root-to-leaf path has the same length.",
   ],
   "10-4": [
-    "2–3 and 2–3–4 trees generalize BST nodes to 2, 3, or 4 children with one, two, or three keys; split and promote rules keep leaves level.",
-    "They foreshadow B-trees and red-black equivalence proofs.",
+    "A 2–3–4 tree extends 2–3 trees by allowing 4-nodes with three keys and four children. It keeps all external nodes on the same level.",
+    "The main advantage over 2–3 trees is top-down update. Splitting 4-nodes on the way down guarantees the final leaf has room, avoiding a backward restructuring pass for insertion.",
+    "Deletion uses the same top-down idea in reverse: before descending, ensure the child to be visited is not a 2-node by rotating or combining with a sibling.",
   ],
   "10-5": [
-    "Red-black trees encode 2–3–4 invariants in a binary tree with coloring rules; rotations plus recoloring restore balance in O(1) amortized pointer updates per level walked.",
-    "Standard library map/set implementations often use red-black balancing.",
+    "A red-black tree is a binary-tree representation of a 2–3–4 tree. Black links represent original 2–3–4 tree child pointers, while red links connect binary nodes that together encode a 3-node or 4-node.",
+    "The resulting binary search tree has equal black-link counts on all root-to-external paths and no two consecutive red links. Its height is at most twice a logarithmic bound.",
+    "Searching ignores colors and behaves like ordinary BST search. Updates use recoloring and rotations, either top-down by splitting 4-nodes during descent or bottom-up after insertion.",
   ],
   "10-6": [
-    "B-trees widen nodes to thousands of keys, minimizing disk seeks; branching factor tracks block size and cache lines.",
-    "Database indexes rely on B+ tree variants that link leaves for range scans.",
+    "B-trees are high-degree balanced search trees designed for indexes that live on disk. The goal is not only O(log n) comparisons, but a very small number of disk accesses.",
+    "A B-tree of order m is an m-way search tree whose nonroot nodes are at least half full and whose failure nodes are all on the same level.",
+  ],
+  "10-6-1": [
+    "An m-way search tree stores multiple keys in each node and uses the intervals between those keys to choose among up to m subtrees.",
+    "AVL, 2–3, and 2–3–4 trees can be viewed as low-degree search trees; B-trees raise the degree to reduce external-memory access.",
+  ],
+  "10-6-2": [
+    "Searching an m-way search tree retrieves a node, finds the interval containing the target key, and descends through the matching subtree pointer.",
+    "If a node has few keys, sequential scan is adequate. If it has many keys, binary search inside the node reduces CPU work, but disk access count is still governed by tree height.",
+  ],
+  "10-6-3": [
+    "A B-tree of order m requires the root to have at least two children when nonempty, every other nonfailure node to have at least ceil(m/2) children, and all failure nodes to be at the same level.",
+    "Large order keeps height small. The text analyzes node size, seek time, latency, and transfer time to choose m near the flat minimum of expected search time.",
+  ],
+  "10-6-4": [
+    "B-tree insertion first searches to the leaf where the new key belongs. If the leaf overflows, it splits and promotes a separator key to the parent.",
+    "Splitting can propagate up to the root; a root split creates a new root and increases tree height by one. With large m, average split frequency is low.",
+  ],
+  "10-6-5": [
+    "B-tree deletion reduces deletion from an internal node to deletion from a leaf by replacing the key with a predecessor or successor from a leaf.",
+    "If a leaf becomes deficient, the algorithm first tries rotation with a nearby sibling; if that is impossible, it combines nodes and may propagate the deficiency upward.",
+    "The section also describes lazy deletion with delete bits, trading disk space for fewer restructuring writes.",
+  ],
+  "10-6-6": [
+    "Variable-size keys complicate in-node binary search and storage management. The text recommends fixed-size nodes and enough space for the largest expected keys when the range is small.",
+    "For larger variation, node formats may include key-address tables, or keys may be sampled or truncated with synonym handling.",
   ],
   "10-7": [
-    "Splay trees move accessed nodes to the root via rotations without storing extra balance bits; amortized access is logarithmic under the access sequence model.",
-    "They excel when queries exhibit locality of reference.",
+    "Splay trees are ordinary binary search trees followed by a splay after every successful search, insertion, or deletion. The splay rotates the accessed or affected node to the root.",
+    "The rotations are zig, zig-zig, and zig-zag variants. Unlike AVL or red-black trees, no balance factor or color is stored.",
+    "The guarantee is amortized: a sequence of operations on a splay tree costs O(log n) per operation on average over the sequence, using a potential argument based on subtree sizes.",
   ],
   "10-8": [
-    "Digital search trees branch on bit or character position in keys, not on full key comparison at every node.",
-    "Height tracks key length rather than cardinality alone; interplay with trie structures is tight.",
+    "Digital search structures branch on bits of the key rather than comparing the whole key at every node. This is useful when key comparisons are expensive or keys have predictable bit structure.",
+    "The chapter moves from digital search trees to binary tries, compressed binary tries, and Patricia.",
+  ],
+  "10-8-1": [
+    "A digital search tree stores one element per node. At level i, bit i of the search key chooses left for 0 or right for 1.",
+    "Search, insert, and delete resemble ordinary BST operations, but the branch decision comes from a key bit rather than comparing the whole key with the current node's key.",
+  ],
+  "10-8-2": [
+    "A binary trie separates branch nodes from element nodes. Branch nodes contain left and right pointers; element nodes hold the actual data.",
+    "A successful search follows bits until it reaches an element node, then performs the single key comparison. Degree-one branch nodes can be compressed away by storing a bit-number field.",
+  ],
+  "10-8-3": [
+    "Patricia represents a compressed binary trie using augmented branch nodes. The head node has bit number zero, and pointers that move to a node with a nonincreasing bit number behave like element pointers.",
+    "Search follows bit-number tests without comparing full keys until the final candidate node. Insertion finds the first differing bit between the new key and the candidate key, then splices in a new augmented branch node.",
   ],
   "10-9": [
-    "Tries store shared prefixes as overlapping paths; compressed tries collapse unary chains to save space.",
-    "Useful for dictionaries, autocomplete, and IP routing—often paired with edge-label compression tricks.",
+    "A trie generalizes binary tries to degree m. Branching at each level is determined by a sampled portion of the key, often one character at a time.",
+    "The structure is especially useful for variable-length string keys because common prefixes share paths and a blank character can distinguish a key from its extension.",
+  ],
+  "10-9-1": [
+    "A trie has branch nodes containing pointer arrays and element nodes containing actual keys and record information. In the book's alphabet example, branch nodes use 27 links: one for each letter plus a blank.",
+    "At level j, the jth sampled character chooses the next link. When a subtrie contains only one key, the subtrie can be represented by an element node.",
+  ],
+  "10-9-2": [
+    "Searching a trie decomposes the key into sampled characters and follows the matching links. The full key is checked only when an element node is reached.",
+    "The worst-case time is O(l), where l is the number of trie levels traversed.",
+  ],
+  "10-9-3": [
+    "Sampling strategy determines trie height. Sampling left-to-right, right-to-left, randomized positions, or alternating positions can produce very different shapes for the same key set.",
+    "The optimal sampling function is data dependent and hard to choose dynamically, so practical designs use simple robust sampling or limit the number of levels and pack synonyms into element nodes.",
+  ],
+  "10-9-4": [
+    "Insertion searches for the new key. If it reaches a missing pointer, the new element node is attached there.",
+    "If it reaches a different element key, branch nodes are introduced until the two keys differ at the sampled position, then the old and new element nodes are placed under different links.",
+  ],
+  "10-9-5": [
+    "Deletion removes the target element and then collapses branch nodes that no longer separate multiple keys.",
+    "A count field on branch nodes helps determine when a branch node has become unnecessary. Compressed tries add skip information to remove one-child branch nodes.",
+  ],
+  "10-10": [
+    "Differential files address indexed-file recovery and update cost. Instead of rewriting a large master file on every update, changed records can be stored in a smaller differential file with logging.",
+    "When the master index is manageable, it can point to either master-file or differential-file records. When both index and file are large, a differential index tracks updates, deletes, and inserts while the master index remains unchanged.",
+    "A Bloom filter can reduce extra index lookups: a no answer proves the key is not in the differential index, while maybe triggers a differential-index search before falling back to the master index.",
+  ],
+  "10-11": [
+    "The references section closes the chapter's survey of search structures. Use it as a map of tradeoffs: static optimality, strict height balance, multiway disk indexes, amortized self-adjustment, bitwise branching, string-key tries, and update logs solve different search-table pressures.",
   ],
 };
 

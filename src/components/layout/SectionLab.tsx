@@ -44,9 +44,17 @@ const TreeViz = dynamic(() => import("@/components/viz/TreeViz"), { ssr: false }
 const TreeConceptViz = dynamic(() => import("@/components/viz/TreeConceptViz"), { ssr: false });
 const BSTViz = dynamic(() => import("@/components/viz/BSTViz"), { ssr: false });
 const HeapViz = dynamic(() => import("@/components/viz/HeapViz"), { ssr: false });
+const HeapStructuresConceptViz = dynamic(
+  () => import("@/components/viz/HeapStructuresConceptViz"),
+  { ssr: false }
+);
 const GraphViz = dynamic(() => import("@/components/viz/GraphViz"), { ssr: false });
 const InternalSortingConceptViz = dynamic(
   () => import("@/components/viz/InternalSortingConceptViz"),
+  { ssr: false }
+);
+const SearchStructuresConceptViz = dynamic(
+  () => import("@/components/viz/SearchStructuresConceptViz"),
   { ssr: false }
 );
 
@@ -159,9 +167,9 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
     case "hash-table":
       return <HashTableViz key={sectionId} sectionId={sectionId} />;
     case "heap":
-      return <HeapViz />;
+      return <HeapStructuresConceptViz key={sectionId} sectionId={sectionId} />;
     case "binary-search-trees":
-      return <BSTViz />;
+      return <SearchStructuresConceptViz key={sectionId} sectionId={sectionId} />;
     default:
       return null;
   }
