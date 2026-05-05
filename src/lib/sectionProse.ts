@@ -85,54 +85,57 @@ const STACK_QUEUE: Record<string, string[]> = {
   ],
   "3-4": [
     "Evaluating arithmetic expressions involves precedence and associativity. Infix notation needs parentheses or rules; compilers often convert to postfix (RPN) for one-pass evaluation.",
-    "Stacks hold operators or intermediate values while you scan tokens—this section ties grammar to concrete algorithms.",
+    "The lab is a generic LIFO stack—map push/pop to “operands held while you wait for operators” as you read the infix and postfix algorithms in the text; §3.4.2 steps through a concrete RPN eval.",
   ],
   "3-4-2": [
     "Postfix (Reverse Polish) expressions can be evaluated with a single operand stack: scan left-to-right, push numbers, and on each operator apply it to the top stack values.",
-    "The lab stack mirrors that process; step through postfix traces from the text alongside the visualization.",
+    "Use Next token in the lab to replay a short postfix example; each step matches the textbook’s one-stack evaluation pattern.",
   ],
   "3-5": [
-    "Maze solving is a classic depth-first pattern: try a move, push state, backtrack on dead ends by popping. A stack (explicit or recursive) records the current path.",
-    "Relate the maze discussion to DFS on graphs in a later chapter—the same skeleton appears in many search problems.",
+    "The mazing problem (classic rat-in-a-maze / DFS on a grid): keep a trial path on a stack, mark visited cells — the usual formulation uses maze[][] where 0 is open and 1 is blocked plus mark[][] so each grid cell is tried at most once.",
+    "The companion lab freezes a common four-way tie-break — try moves in order right, then down, then left, then up. Horowitz §3.5 tells the same story; richer variants scan eight compass directions and store (row, col, dir) on each stack frame.",
   ],
   "3-6": [
     "When multiple stacks or queues share one array, you can grow pointers from both ends or partition the array carefully to avoid overflow.",
-    "The trade-off is simplicity versus utilization; reallocation or linked structures become necessary when fixed partitions are too rigid.",
+    "The lab shows two stacks in one vector: left stack grows upward in index, right stack downward until tops meet—that is Horowitz’s classic two-stack picture; queues with two ends use related bookkeeping.",
   ],
 };
 
 const LINKED_LIST: Record<string, string[]> = {
   "4-1": [
-    "Pointers name storage that lives outside the fixed layout of an array; dynamic allocation lets structures grow and shrink at runtime.",
-    "Careful handling of allocation, initialization, and free/return avoids leaks and dangling references.",
+    "Chapter 4 contrasts sequential allocation (fixed stride, cheap indexed access, expensive arbitrary insert/delete) with linked allocation (nodes anywhere in memory, each with a link to the next).",
+    "Classic walkthroughs simulate a chain with parallel data[] and link[] plus first. Inserting “between FAT and HAT” uses four updates: allocate a node, set its data, point its link at the successor, then point the predecessor’s link at the new node—swapping the last two steps breaks the list (common exam question).",
+    "Deleting needs the predecessor: use prev/cur (or trail), splitting the head case from interior deletes. The list lab below practices singly linked rewiring.",
   ],
   "4-2": [
-    "A singly linked list threads nodes with one next pointer; insert and delete rewrite a few links instead of shifting an entire array.",
-    "The lab lets you insert, delete, and search—watch how head updates and edge cases mirror the textbook’s diagrams.",
+    "In C, listNode holds data fields and listPointer link; trail (or the node before x) matters because deleting the head differs from deleting an interior cell.",
+    "Insert/delete signatures use listPointer *first when the caller’s head must change; alternatively delete can return the new head for call-by-value call sites.",
   ],
   "4-3": [
-    "Polynomials can be stored as linked lists of terms (exponent, coefficient), often sorted by exponent for efficient add and multiply.",
-    "Sparse polynomials benefit most; dense ones may still favor arrays when degree is small and known.",
+    "Instead of stack[N][MAX], linked storage uses an array of tops top[i], each the head of a chain. Linked queues keep front[i] and rear[i]; empty means both NULL (a common textbook pattern).",
+    "The lab demonstrates multiple stacks and queues side by side with push/pop and enqueue/dequeue.",
   ],
   "4-4": [
-    "In a circular list, the tail points back to the head, which simplifies round-robin iterators and certain buffer implementations.",
-    "Deletion and traversal need a clear policy to avoid infinite loops—often a sentinel or a counted walk.",
+    "Polynomials use polyNode lists with coef, expon, and link; keeping terms sorted by exponent makes padd a single merge-style pass. attach grows the result at the rear by updating a rear pointer.",
+    "erase walks the list and frees nodes. The same chapter pattern also mentions recycling nodes through an avail list (get_node/ret_node, cerase) so teardown can be O(1)-ish for circular polynomial lists.",
+    "The polynomial visualization is wired to this section (§4.4).",
   ],
   "4-5": [
-    "Beyond basic insert/delete, lists support concatenate, reverse, split, and multi-list algorithms; complexity hinges on whether you have tail pointers or length metadata.",
-    "Many exercises reduce to careful pointer rewiring without special cases if you use dummy head nodes.",
+    "Circular lists use a last pointer: insertFront(last, node) and length walk the ring. The same material also gives invert(lead) with lead/middle/trail pointers reversing links in one pass, and concatenate(ptr1, ptr2) splicing the end of the first list to the second (mutating the first list).",
+    "Circular polynomials reuse nodes via get_node/ret_node, cerase, and an avail list. The generic singly linked lab still helps with chain rewiring intuition.",
   ],
   "4-6": [
-    "Equivalence relations partition a set into disjoint classes; list representations can merge classes when you discover new equivalences.",
-    "The text connects this to union/find style structures that reappear with trees in later chapters.",
+    "Equivalence relations (reflexive, symmetric, transitive) partition a finite set. A standard worked example uses S = {0,…,11}, sample pairs, and Program 4.22 with seq[], out[], and a stack—O(n+m) for n elements and m pairs.",
+    "The lab steps through the same nine pairs as a chalkboard-style trace; when all are merged, classes match {0,2,4,7,11}, {1,3,5}, {6,8,9,10}. (Some outlines place this after §4.8; URLs keep id 4-6.)",
   ],
   "4-7": [
-    "Sparse matrices reappear with linked representations—orthogonal lists link nodes along rows and columns for flexible nonzero storage.",
-    "Choosing array-based vs. linked sparse forms depends on fill patterns and whether structure changes dynamically.",
+    "Not every chapter table of contents foregrounds sparse matrices; Horowitz-style texts often tuck linked sparse forms near §4.7 (orthogonal lists or triples).",
+    "The sparse-matrix lab illustrates nonzero-focused storage.",
   ],
   "4-8": [
-    "Doubly linked nodes carry next and prev pointers, so you can delete an interior node or insert before a node given only its address.",
-    "Enable the doubly mode in the lab to see bidirectional links; insertion and deletion mirror the singly list cases with symmetric updates.",
+    "Singly linked and singly circular lists force a walk from the head to find a predecessor or to delete an arbitrary node you only hold by address. Doubly linked nodes add llink and rlink so neighbors update symmetrically.",
+    "The usual dinsert/ddelete patterns in figures for doubly linked lists rewire both directions. Toggle doubly mode in the lab to mirror those updates.",
+    "Some printed outlines list §4.8 before §4.6; this app keeps stable § labels while ordering the sidebar for a clearer teaching sequence (see topic outline).",
   ],
 };
 

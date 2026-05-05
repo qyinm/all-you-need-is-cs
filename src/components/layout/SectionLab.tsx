@@ -14,6 +14,14 @@ const StringArrayViz = dynamic(() => import("@/components/viz/StringArrayViz"), 
 const StructUnionViz = dynamic(() => import("@/components/viz/StructUnionViz"), {
   ssr: false,
 });
+const LinkedStacksQueuesViz = dynamic(
+  () => import("@/components/viz/LinkedStacksQueuesViz"),
+  { ssr: false }
+);
+const EquivalenceClassViz = dynamic(
+  () => import("@/components/viz/EquivalenceClassViz"),
+  { ssr: false }
+);
 const PolynomialListViz = dynamic(() => import("@/components/viz/PolynomialListViz"), {
   ssr: false,
 });
@@ -23,7 +31,12 @@ const SortingViz = dynamic(() => import("@/components/viz/SortingViz"), { ssr: f
 const LinkedListViz = dynamic(() => import("@/components/viz/LinkedListViz"), {
   ssr: false,
 });
+const MazeStackViz = dynamic(() => import("@/components/viz/MazeStackViz"), { ssr: false });
 const StackViz = dynamic(() => import("@/components/viz/StackViz"), { ssr: false });
+const PostfixEvalViz = dynamic(() => import("@/components/viz/PostfixEvalViz"), { ssr: false });
+const DualStackArrayViz = dynamic(() => import("@/components/viz/DualStackArrayViz"), {
+  ssr: false,
+});
 const QueueViz = dynamic(() => import("@/components/viz/QueueViz"), { ssr: false });
 const HashTableViz = dynamic(() => import("@/components/viz/HashTableViz"), {
   ssr: false,
@@ -68,7 +81,16 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
           return <ArrayViz />;
       }
     case "stack-queue":
-      if (sectionId === "3-2" || sectionId === "3-4-2" || sectionId === "3-5") {
+      if (sectionId === "3-4-2") {
+        return <PostfixEvalViz />;
+      }
+      if (sectionId === "3-6") {
+        return <DualStackArrayViz />;
+      }
+      if (sectionId === "3-5") {
+        return <MazeStackViz />;
+      }
+      if (sectionId === "3-2" || sectionId === "3-4") {
         return <StackViz />;
       }
       if (sectionId === "3-3") {
@@ -76,8 +98,17 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
       }
       return <StackQueuePair />;
     case "linked-list":
-      if (sectionId === "4-3") {
+      if (sectionId === "4-4") {
         return <PolynomialListViz />;
+      }
+      if (sectionId === "4-3") {
+        return <LinkedStacksQueuesViz />;
+      }
+      if (sectionId === "4-6") {
+        return <EquivalenceClassViz />;
+      }
+      if (sectionId === "4-7") {
+        return <SparseMatrixViz />;
       }
       return <LinkedListViz initialDoubly={sectionId === "4-8"} />;
     case "trees":
