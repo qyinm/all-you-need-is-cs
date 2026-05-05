@@ -130,7 +130,7 @@ function labNode(topicId: string, sectionId: string): ReactNode | null {
       }
       return <TreeViz />;
     case "graphs":
-      return <GraphViz />;
+      return <GraphViz key={sectionId} sectionId={sectionId} />;
     case "sorting":
       if (sectionId === "7-1") return <ArrayViz />;
       if (sectionId === "7-2") {

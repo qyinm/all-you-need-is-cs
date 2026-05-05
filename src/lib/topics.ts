@@ -121,15 +121,15 @@ export const PHASE1_TOPICS: Topic[] = [
     id: "graphs",
     title: "Graphs",
     subtitle:
-      "Adjacency-structured graphs and Ch. 6 traversal: BFS, DFS, and Dijkstra-style exploration.",
+      "Ch. 6 graphs from Horowitz and Sahni: terminology, representations, traversal, spanning trees, shortest paths, activity networks, and path enumeration.",
     complexity: "hard",
     bookChapter: "Ch. 6",
     outline: [
-      { id: "6-1", label: "§6.1", title: "The graph abstract data type" },
-      { id: "6-2", label: "§6.2", title: "Elementary graph operations" },
-      { id: "6-3", label: "§6.3", title: "Connected components" },
-      { id: "6-4", label: "§6.4", title: "Minimum-cost spanning trees; shortest paths" },
-      { id: "6-5", label: "§6.5", title: "Activity networks (AOV / AOE)" },
+      { id: "6-1", label: "§6.1", title: "Terminology and representations" },
+      { id: "6-2", label: "§6.2", title: "Traversals, components, and spanning trees" },
+      { id: "6-3", label: "§6.3", title: "Shortest paths and transitive closure" },
+      { id: "6-4", label: "§6.4", title: "Activity networks, topological sort, critical paths" },
+      { id: "6-5", label: "§6.5", title: "Enumerating all paths" },
     ],
   },
   {

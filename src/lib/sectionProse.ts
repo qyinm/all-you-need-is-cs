@@ -199,24 +199,33 @@ const TREES: Record<string, string[]> = {
 
 const GRAPHS: Record<string, string[]> = {
   "6-1": [
-    "A graph ADT consists of vertices and edges, directed or undirected, possibly weighted. Operations include add/remove, adjacency queries, and iteration over neighbors.",
-    "Choosing dense vs. sparse representations (matrix vs. adjacency lists) drives both space and time of standard algorithms.",
+    "Chapter 6 opens with Euler's Koenigsberg bridge problem, then turns it into graph terminology: vertices, edges, directed edges, paths, cycles, connected components, strongly connected components, degree, in-degree, and out-degree.",
+    "The representation choice is the practical point of §6.1. An adjacency matrix answers edge-existence queries immediately but costs n^2 space and usually n^2 scans; adjacency lists store only present edges and make sparse graph work closer to O(n + e).",
+    "The text also introduces inverse adjacency lists, orthogonal lists for digraphs, adjacency multilists for undirected graphs where one edge node can live in two vertex lists, and weighted networks where matrix entries or list nodes carry cost.",
   ],
   "6-2": [
-    "Elementary operations include degree computation, edge existence checks, and subgraph extraction. Breadth-first and depth-first search skeletons appear early.",
-    "The graph lab emphasizes how visitation orders differ between BFS layers and DFS recursion stacks.",
+    "DFS and BFS are the two traversal patterns in this section. DFS marks a start vertex, recursively follows an unvisited adjacent vertex, and backs up when it reaches a dead end; BFS marks the start vertex, then expands outward by queue layers.",
+    "With adjacency lists, each undirected edge contributes two list nodes, so DFS/BFS over a connected component costs O(e) for traversal plus O(n) for outer bookkeeping. With an adjacency matrix, checking each possible neighbor pushes traversal toward O(n^2).",
+    "Repeated DFS or BFS calls over still-unvisited vertices produce all connected components. When the graph is connected, the traversed edges form a DFS or BFS spanning tree; the non-tree edges are back edges, and adding one back edge to the tree creates a cycle.",
+    "The same section introduces minimum-cost spanning trees through Kruskal's algorithm: consider edges in nondecreasing weight order, accept an edge only if it connects two different components, and use union-find to make the cycle test efficient.",
   ],
   "6-3": [
-    "Connected components partition vertices reachability-wise in undirected graphs; DFS or BFS tags a component id per visit.",
-    "For directed graphs, strongly connected components need Kosaraju or Tarjan—strictly richer than undirected connectivity.",
+    "Shortest-path problems in §6.3 use directed weighted graphs, with path length defined as the sum of edge weights. The first target is single-source shortest paths with positive weights.",
+    "The textbook presents Dijkstra's method as SHORTEST_PATH: maintain a set S of vertices whose shortest distances are finalized, choose the outside vertex with minimum DIST, then relax outgoing costs through that vertex. With a cost adjacency matrix the running time is O(n^2).",
+    "For all-pairs shortest paths, ALL_COSTS is the Floyd-style dynamic program. A(k)(i,j) stores the best i-to-j cost using no intermediate vertex with index greater than k, giving the recurrence min(A(i,j), A(i,k) + A(k,j)) and O(n^3) time.",
+    "Transitive closure asks only whether a path exists. A+ records positive-length reachability, while A* is the reflexive transitive closure with the diagonal set to one. The same triple-loop idea works with boolean or/and instead of numeric min/plus.",
   ],
   "6-4": [
-    "Minimum spanning tree algorithms (Kruskal, Prim) greedily add safe edges; shortest path algorithms (Dijkstra, Bellman–Ford) relax edges by increasing cost structure.",
-    "The lab traces a simplified exploration—pair the visualization with the text’s proof sketches for correctness.",
+    "An AOV network puts activities on vertices and precedence constraints on directed edges. A feasible AOV network must be acyclic; topological order lists each activity after all of its predecessors.",
+    "TOPOLOGICAL_ORDER stores each vertex's predecessor count in the head node and uses adjacency lists for outgoing edges. Vertices whose count drops to zero are pushed onto a stack; each output vertex decrements its successors. The whole algorithm is O(n + e).",
+    "An AOE network puts activities on edges and events on vertices. Critical path analysis computes earliest event times in topological order, then latest event times in reverse topological order; activities with equal earliest and latest start times are critical.",
+    "The book's project-network point is operational: the minimum project duration is the longest start-to-finish path, and only speeding activities that lie on every critical path can reduce that duration.",
   ],
   "6-5": [
-    "Activity-on-vertex (AOV) networks topological-sort for precedence; activity-on-edge (AOE) networks support critical path analysis.",
-    "Longest paths in DAGs combine topological order with edge relaxations—scheduling builds on these templates.",
+    "The final graph section switches from one shortest path to listing simple source-to-destination paths in nondecreasing length. This is useful when the shortest path must also satisfy extra constraints that are hard to encode in edge weights.",
+    "The M_SHORTEST sketch starts with the shortest path, partitions the remaining path space by which edge of that path is first excluded while later suffix edges are required, and keeps candidate paths with their include/exclude constraints.",
+    "Each iteration prints the currently shortest candidate, partitions the corresponding constrained set, and inserts the new shortest constrained paths into Q. The number of simple paths can grow factorially, so the text analyzes the cost of producing the first m paths rather than all paths.",
+    "Using repeated shortest-path computations gives O(mn^3) time for the first m paths in the book's informal analysis; a heap for Q keeps candidate selection from dominating that bound.",
   ],
 };
 
