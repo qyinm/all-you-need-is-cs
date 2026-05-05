@@ -18,7 +18,11 @@ const MAZE_LINES = [
   "#.###.#.###.#",
   "#...#...#...#",
   "###.#.#.###.#",
-  "#.....#...G.#",
+  "#...#.#.#...#",
+  "#.###.#.#.#.#",
+  "#...#...#...#",
+  "#.#.#####.#.#",
+  "#.#.......#G#",
   "#############",
 ];
 
@@ -161,6 +165,46 @@ export default function MazeStackViz() {
 
   const onStack = useMemo(() => new Set(stack.map((p) => key(p.r, p.c))), [stack]);
 
+  function cellMarker(r: number, c: number, ch: string): string {
+    const k = key(r, c);
+    const wall = ch === "#";
+    if (wall) return "";
+    const isStart = ch === "S";
+    const isGoal = ch === "G";
+    if (isStart) return "S";
+    if (isGoal) return "G";
+    const onPath = onStack.has(k);
+    const wasHere = visited.has(k);
+    if (onPath) return "•";
+    if (wasHere) return "×";
+    if (done === "no_path" && walkable(ch)) return "×";
+    return "";
+  }
+
+  function cellClassName(r: number, c: number, ch: string): string {
+    const k = key(r, c);
+    const wall = ch === "#";
+    const isStart = ch === "S";
+    const isGoal = ch === "G";
+    const onPath = onStack.has(k);
+    const wasHere = visited.has(k);
+    const isBacktracked = wasHere && !onPath && !wall;
+    const neverReached =
+      done === "no_path" && !wall && !wasHere && walkable(ch) && !isStart && !isGoal;
+
+    let cellClass = "border border-hairline text-ink";
+    if (wall) {
+      cellClass = "border border-hairline bg-charcoal text-canvas";
+    } else if (onPath) {
+      cellClass = "border border-hairline bg-surface-soft text-ink";
+    } else if (isBacktracked || neverReached) {
+      cellClass = "border border-hairline bg-canvas text-mute";
+    } else {
+      cellClass = "border border-hairline bg-canvas text-body";
+    }
+    return cellClass;
+  }
+
   return (
     <div className="space-y-5">
       <p className="text-center text-sm text-body">
@@ -203,46 +247,32 @@ export default function MazeStackViz() {
         {lastNote}
       </p>
 
-      <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-start lg:justify-center">
-        <div
-          className="inline-grid gap-px rounded-lg border border-hairline bg-hairline p-2"
-          style={{
-            gridTemplateColumns: `repeat(${cols}, minmax(0, 1.25rem))`,
-          }}
-        >
-          {grid.map((row, r) =>
-            row.map((ch, c) => {
-              const k = key(r, c);
-              const wall = ch === "#";
-              const isStart = ch === "S";
-              const isGoal = ch === "G";
-              const onPath = onStack.has(k);
-              const wasVisited = visited.has(k);
-              let cellClass = "border border-hairline text-ink";
-              if (wall) {
-                cellClass = "border border-hairline bg-charcoal text-canvas";
-              } else if (onPath) {
-                cellClass = "border border-hairline bg-surface-soft text-ink";
-              } else if (wasVisited) {
-                cellClass = "border border-hairline bg-canvas text-mute";
-              } else {
-                cellClass = "border border-hairline bg-canvas text-body";
-              }
-
-              return (
-                <div
-                  key={k}
-                  title={`(${r},${c})`}
-                  className={`flex aspect-square items-center justify-center text-[9px] font-mono leading-none sm:text-[10px] ${cellClass}`}
-                >
-                  {wall ? "" : isStart ? "S" : isGoal ? "G" : onPath ? "•" : wasVisited ? "·" : ""}
-                </div>
-              );
-            })
-          )}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start">
+        <div className="flex justify-center md:justify-end">
+          <div
+            className="inline-grid gap-px rounded-lg border border-hairline bg-hairline p-2"
+            style={{
+              gridTemplateColumns: `repeat(${cols}, minmax(0, 1.25rem))`,
+            }}
+          >
+            {grid.map((row, r) =>
+              row.map((ch, c) => {
+                const k = key(r, c);
+                return (
+                  <div
+                    key={k}
+                    title={`(${r},${c})`}
+                    className={`flex aspect-square items-center justify-center text-[9px] font-mono leading-none sm:text-[10px] ${cellClassName(r, c, ch)}`}
+                  >
+                    {cellMarker(r, c, ch)}
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
 
-        <div className="w-full max-w-xs rounded-lg border border-hairline bg-canvas p-3">
+        <div className="w-full rounded-lg border border-hairline bg-canvas p-3 md:max-w-none">
           <h3 className="mb-2 font-mono text-xs font-medium uppercase tracking-wide text-mute">
             Stack (bottom → top)
           </h3>
@@ -265,9 +295,14 @@ export default function MazeStackViz() {
       </div>
 
       <p className="ui-caption text-center">
-        Usual encoding: <span className="font-mono">maze[row][col]</span> with 0 = open / 1 = wall; visit flags in{" "}
-        <span className="font-mono">mark[][]</span>. Here symbols convey the same idea visually. Tie-break differs from eight-way{" "}
-        <span className="font-mono">offsets move[8]</span> until you add per-frame direction on the stack.
+        Cells: <span className="font-mono">•</span> on the current stack path; <span className="font-mono">×</span> on
+        cells you entered and later left while backtracking. If the search exhausts without reaching{" "}
+        <span className="font-mono">G</span>, still-unvisited open cells also show{" "}
+        <span className="font-mono">×</span>. After a successful run, untouched corridors stay blank.{" "}
+        <span className="font-mono">S</span>/<span className="font-mono">G</span> stay fixed. Usual encoding:{" "}
+        <span className="font-mono">maze[row][col]</span> with 0 = open / 1 = wall; visit flags in{" "}
+        <span className="font-mono">mark[][]</span>. Tie-break here is four-way until you add eight-way{" "}
+        <span className="font-mono">offsets move[8]</span> and per-frame direction on the stack.
       </p>
     </div>
   );
